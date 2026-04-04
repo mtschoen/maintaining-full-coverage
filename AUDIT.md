@@ -8,7 +8,7 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 - [x] Escalation ladder — each of the 5 tiers, plus the "never skip" constraint
 - [x] Report file — treated as first-class artifact, updated now not later, committed alongside code
 - [x] Report file — CI rejection of regressions, exemption/baseline process
-- [ ] Report file — git hash placement, minimal format fields (structural, tested by inspection)
+- [x] Report file — git hash placement, minimal format fields (verified via sample report generation)
 - [x] Development nudge — don't batch tests, branch awareness
 - [x] Heroic: OS/platform mocking
 - [x] Heroic: error path simulation
@@ -34,6 +34,4 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 | 9: Startup/Shutdown (daemon) | Mock init deps, trigger teardown explicitly |
 | 10: Hollow Coverage (review) | Red flag: tests that cover without testing meaningful behavior |
 
-## Remaining structural gap
-
-- Report format fields (git hash placement, minimal format) — structural, verified by inspection not pressure scenario
+## Coverage: 15/15 sections covered
