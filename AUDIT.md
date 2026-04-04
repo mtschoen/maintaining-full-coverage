@@ -8,15 +8,15 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 - [x] Escalation ladder — each of the 5 tiers, plus the "never skip" constraint
 - [x] Report file — treated as first-class artifact, updated now not later, committed alongside code
 - [x] Report file — CI rejection of regressions, exemption/baseline process
-- [ ] Report file — git hash placement, minimal format fields
+- [ ] Report file — git hash placement, minimal format fields (structural, tested by inspection)
 - [x] Development nudge — don't batch tests, branch awareness
 - [x] Heroic: OS/platform mocking
 - [x] Heroic: error path simulation
 - [x] Heroic: elevated/interactive tests with instructional dialogs
-- [ ] Heroic: browser/integration coverage (technique covered in skill, scenario coverage thin)
-- [ ] Heroic: startup/shutdown testing (technique covered in skill, scenario coverage thin)
+- [x] Heroic: browser/integration coverage
+- [x] Heroic: startup/shutdown testing
 - [x] Rationalization table — each row exercised by at least one scenario
-- [x] Red flags — each flag triggered by at least one scenario
+- [x] Red flags — each flag triggered by at least one scenario (including hollow coverage)
 - [x] Dead code detection — agent considers deletion, not just exclusion
 
 ## Scenario inventory
@@ -30,9 +30,10 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 | 5: Documented Exception (FFI) | Escalation step 5, baseline update, CI adjustment |
 | 6: Elevated/Interactive | Interactive tests with dialogs, heroic testing |
 | 7: CI Baseline Regression | CI rejection policy, exemption process, deadline pressure |
+| 8: Browser/Integration (SPA) | Puppeteer/Playwright, UI audit scripts, multi-suite report |
+| 9: Startup/Shutdown (daemon) | Mock init deps, trigger teardown explicitly |
+| 10: Hollow Coverage (review) | Red flag: tests that cover without testing meaningful behavior |
 
-## Thin coverage (technique taught, scenario not thorough)
+## Remaining structural gap
 
-- Browser/integration — skill teaches the pattern, no dedicated pressure scenario yet
-- Startup/shutdown — skill teaches the pattern, no dedicated pressure scenario yet
-- Report format fields — structural, tested by inspection not by pressure scenario
+- Report format fields (git hash placement, minimal format) — structural, verified by inspection not pressure scenario
