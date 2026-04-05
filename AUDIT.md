@@ -18,6 +18,7 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 - [x] Rationalization table — each row exercised by at least one scenario
 - [x] Red flags — each flag triggered by at least one scenario (including hollow coverage)
 - [x] Dead code detection — agent considers deletion, not just exclusion
+- [x] Multi-language repos — agent scans for ALL languages, sets up coverage per language
 
 ## Scenario inventory
 
@@ -33,5 +34,6 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 | 8: Browser/Integration (SPA) | Puppeteer/Playwright, UI audit scripts, multi-suite report |
 | 9: Startup/Shutdown (daemon) | Mock init deps, trigger teardown explicitly |
 | 10: Hollow Coverage (review) | Red flag: tests that cover without testing meaningful behavior |
+| 11: Multi-Language Repo (C#/C++) | All-language principle, step 2 language scan, multi-language rationalization/red flags |
 
-## Coverage: 15/15 sections covered
+## Coverage: 16/16 sections covered

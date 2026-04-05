@@ -1,6 +1,6 @@
 ---
 name: maintaining-full-coverage
-description: Use when completing any feature, bugfix, or refactor in a project that tracks test coverage, or when establishing coverage tracking for a new project
+description: "Use when: user mentions coverage, 100% coverage, coverage gate, test report, or TEST-REPORT.md; completing any feature/bugfix/refactor in a project that tracks test coverage; establishing coverage tracking for a new project"
 ---
 
 # Maintaining Full Coverage
@@ -10,6 +10,8 @@ description: Use when completing any feature, bugfix, or refactor in a project t
 If the coverage report doesn't say 100%, you're not done.
 
 **Core principle:** Every line of production code must be exercised by a test. Uncovered lines are either untested (write a test) or unreachable (delete them).
+
+**This means ALL code, in ALL languages, in the ENTIRE repo.** A C# project with a C++ native library needs 100% coverage in both C# and C++. A Python backend with a JavaScript frontend needs 100% coverage in both Python and JavaScript. If production code exists in the repo and it's in a language you can compile/run, it needs coverage tooling and tests. No language gets a pass.
 
 **Violating the letter of this rule is violating the spirit of this rule.**
 
@@ -37,17 +39,44 @@ Don't batch all test-writing to the end. Write tests alongside code. Coverage de
 ```
 BEFORE claiming completion:
 
-1. FIND the project's coverage command (CLAUDE.md, scripts, etc.)
-2. RUN it — fresh, full, no cache
-3. READ the output — actual percentage, uncovered lines
-4. Is it 100%?
-   - YES → update the report file, commit it alongside your changes
+1. FIND the repo's coverage command. Check in this order:
+   a. CLAUDE.md — look for a documented coverage command
+   b. Scripts directory — look for run-coverage, coverage, or test scripts
+      (e.g., scripts/run-coverage.ps1, scripts/coverage.sh)
+   c. CI config — .github/workflows, Makefile, etc.
+   d. If none found, construct one that covers ALL test projects in the repo
+      (not just one — search for all *.csproj with test references,
+       all test directories, etc.)
+   IMPORTANT: Coverage must include the ENTIRE repo, not a single project.
+2. VERIFY the command covers all production code IN EVERY LANGUAGE.
+   Do NOT trust CLAUDE.md or existing scripts blindly — they may be incomplete.
+   a. Scan the repo for ALL production code across ALL languages
+      (e.g., *.cs, *.cpp, *.h, *.js, *.ts, *.py, *.go, *.rs, etc.)
+   b. For EACH language with production code, identify the coverage tool
+      (e.g., dotnet-coverage for C#, gcov/llvm-cov for C++, istanbul/c8
+      for JS/TS, coverage.py for Python, go cover for Go)
+   c. Check which assemblies/packages/modules the coverage commands
+      actually instrument
+   d. If any production code in any language is excluded, fix it before running
+   Example: a repo has C# managed code and a C++ native library — you need
+   BOTH dotnet-coverage AND gcov/llvm-cov. One coverage tool is not enough.
+   Example: a repo has a Python API and a React frontend — you need BOTH
+   coverage.py AND istanbul/c8. The frontend JS is not optional.
+3. RUN it — fresh, full, no cache
+4. READ the output — actual percentage, uncovered lines
+5. Is it 100%?
+   - YES → continue to step 6
    - NO  → enter the Escalation Ladder below
            Do NOT claim completion. Do NOT skip to exclusions.
-5. ONLY after the report says 100%: done
+6. WRITE or UPDATE `TEST-REPORT.md` at the repo root
+   - Use the format from the Report File Convention section
+   - Include the current git hash, test count, and coverage numbers
+   - This file is a REQUIRED artifact — do not skip this step
+7. COMMIT `TEST-REPORT.md` alongside your other changes
+8. ONLY after the report file is written and committed: done
 ```
 
-The report file is a first-class artifact. It is not an afterthought. Update it and commit it as part of your work, not as a cleanup step later.
+The report file is a first-class artifact. It is not an afterthought. Write it and commit it as part of your work, not as a cleanup step later.
 
 ## The Escalation Ladder
 
@@ -101,7 +130,19 @@ digraph escalation {
 
 ## Report File Convention
 
-Every project maintains a checked-in coverage report. Minimal required format:
+Every project maintains a checked-in coverage report at the **repo root** named `TEST-REPORT.md`. If a project already has a report file under a different name, use that. Otherwise, create `TEST-REPORT.md`.
+
+### Creating or updating the report
+
+After running coverage, **you must** write or overwrite `TEST-REPORT.md` with the results. This is not optional — it is a required artifact of every coverage run.
+
+1. Get the current git short hash: `git rev-parse --short HEAD`
+2. Get the total test count from the test runner output
+3. Get line/branch/method coverage from the coverage tool output
+4. Write `TEST-REPORT.md` at the repo root using the format below
+5. Stage and commit it alongside your other changes
+
+### Minimal required format
 
 ```
 <project> test report — <ISO 8601 timestamp>
@@ -119,10 +160,11 @@ Beyond the minimum, projects add whatever is useful — per-suite breakdowns, br
 
 ### Report file rules
 
+- **Lives at repo root as `TEST-REPORT.md`** unless the project already has a report file elsewhere.
 - **Checked into the repo.** Tracked in git history. `git diff` on the report instantly shows regressions.
 - **Updated whenever tests or coverage change.** Not "later" — now, as part of the work.
 - **Git hash above coverage results.** It establishes what code the numbers describe.
-- **CLAUDE.md documents the command** that generates the report and where it lives.
+- **CLAUDE.md documents the coverage command** and references `TEST-REPORT.md`.
 - **With CI:** PRs that regress coverage are rejected unless an exemption grants a new baseline.
 - **Without CI:** Honor system, but git history still catches regressions.
 
@@ -163,6 +205,8 @@ If you think a line is untestable, you are probably wrong. Mock harder, simulate
 | "Asking the human takes longer than just fixing it" | If you can fix it, fix it. If you can't, ask. Don't reach for pragma instead of asking. |
 | "I'll update the report file after" | The report is a first-class artifact. Update it now, commit it with your changes. |
 | "Both branches do the same thing, testing one is enough" | The coverage tool disagrees. Test both. |
+| "The C++/JS/other-language code is a separate concern" | If it's in the repo and it's production code, it needs 100% coverage. Set up the coverage tool for that language. |
+| "I got 100% on the C# / Python / main language" | That's 100% of ONE language. Check ALL languages in the repo. Every language needs its own coverage tooling. |
 
 ## Red Flags — STOP and Reconsider
 
@@ -171,7 +215,10 @@ If you think a line is untestable, you are probably wrong. Mock harder, simulate
 - Claiming completion with uncovered lines you haven't investigated
 - Assuming code is unreachable without verifying (it might be dead — delete it)
 - Batching all test-writing to the end
-- Treating the report file as optional or "I'll do it later"
+- Treating `TEST-REPORT.md` as optional or "I'll do it later"
+- Claiming completion without writing or updating `TEST-REPORT.md`
 - Skipping straight to step 4 or 5 of the escalation ladder
 - Writing tests that cover the line but don't test meaningful behavior
 - Forgetting to test both branches of a conditional
+- Declaring 100% coverage when you only checked one language in a multi-language repo
+- Ignoring C++, JavaScript, or other secondary languages because the "main" language has full coverage
