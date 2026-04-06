@@ -1,6 +1,6 @@
 ---
 name: maintaining-full-coverage
-description: "Use when: user mentions coverage, 100% coverage, coverage gate, test report, or TEST-REPORT.md; completing any feature/bugfix/refactor in a project that tracks test coverage; establishing coverage tracking for a new project"
+description: "Use when: user mentions coverage, 100% coverage, coverage gate, test report, or TEST-REPORT.md; BEFORE declaring work done, summarizing what you built, or saying 'all passing/working/done'; BEFORE committing or pushing; completing any feature/bugfix/refactor in a project that tracks test coverage; establishing coverage tracking for a new project. If you wrote or changed production code, this skill applies — no exceptions."
 ---
 
 # Maintaining Full Coverage
@@ -24,10 +24,18 @@ TDD is upstream discipline. Verification is evidence. This skill is the metric g
 
 ## When to Use
 
+**Before you declare anything "done":**
+- You wrote or changed production code → this skill applies
+- You're about to say "all passing", "here's what changed", or summarize your work → STOP, run coverage first
+- You're about to commit or push → STOP, run coverage first
+- User asks you to commit → this is a completion event, run coverage before the commit
+
 **Always:**
 - Completing a feature, bugfix, or refactor
 - Setting up coverage tracking for a new project
 - Reviewing whether work is ready to commit
+
+**The test you wrote passing is not the finish line. 100% suite-wide coverage is the finish line.**
 
 **Throughout development (the nudge):**
 While coding, periodically ask yourself: "If I ran coverage right now, would the code I just wrote be covered?" Every `if` has at least two paths. Every `try` has an `except`. Every early `return` has a condition that triggers it. Are both branches tested?
