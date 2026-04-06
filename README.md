@@ -72,17 +72,14 @@ This skill was developed using the [TDD-for-skills](https://github.com/anthropic
 
 **15/15 skill sections covered** by at least one scenario. See [AUDIT.md](AUDIT.md) for the full coverage matrix.
 
-All RED-GREEN comparisons are in `docs/superpowers/plans/`.
+All RED-GREEN comparisons are in `docs/evidence/`.
 
 ## Repo structure
 
 ```
-skill-draft/SKILL.md              -- the skill (copy this to install)
-AUDIT.md                           -- skill coverage audit (15/15 sections)
-docs/superpowers/
-  specs/                           -- design spec
-  plans/                           -- implementation plan, pressure scenarios,
-                                      baseline results, GREEN phase results
+skill-draft/SKILL.md    -- the skill (copy this to install)
+AUDIT.md                -- skill coverage audit (15/15 sections)
+docs/evidence/          -- pressure scenarios, baseline and GREEN-phase results
 ```
 
 ## License
