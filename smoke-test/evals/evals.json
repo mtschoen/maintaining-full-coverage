@@ -1,0 +1,40 @@
+{
+  "skill_name": "smoke-test",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a --json flag to this CLI tool. When passed, it should output the word count, character count, and line count as a JSON object instead of the plain text format. Run it against sample.txt to make sure it works.",
+      "expected_output": "Claude adds the flag, builds the project, runs it with --json and sample.txt, and confirms the JSON output is valid and contains the correct counts.",
+      "files": ["evals/fixtures/dotnet-cli/"],
+      "expectations": [
+        "Program.cs was modified to support a --json flag",
+        "The project was built with dotnet build (or equivalent) and succeeded",
+        "The compiled tool was executed with --json flag and sample.txt as arguments",
+        "The agent verified the JSON output contains correct word, character, and line counts"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add a DELETE /tasks/:id endpoint to this API. It should return 204 on success and 404 if the task doesn't exist.",
+      "expected_output": "Claude adds the endpoint, installs deps, starts the server, creates a task via POST, deletes it via DELETE, and verifies both the 204 response and the 404 for a nonexistent task.",
+      "files": ["evals/fixtures/node-api/"],
+      "expectations": [
+        "server.js was modified to include a DELETE /tasks/:id route",
+        "The server was started and confirmed to be running without errors",
+        "The DELETE endpoint was tested by making actual HTTP requests (curl, fetch, etc.)",
+        "Both the 204 success case and the 404 not-found case were verified via actual HTTP responses"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Add a --summary flag to this script. When passed, instead of converting the full CSV, it should print a summary: the number of rows, the column names, and the min/max of any numeric columns. Try it on sample.csv.",
+      "expected_output": "Claude adds the flag, runs the script with --summary and sample.csv, and verifies the output shows correct row count (3), column names, and numeric range for age (25-35).",
+      "files": ["evals/fixtures/python-script/"],
+      "expectations": [
+        "convert.py was modified to support a --summary flag",
+        "The script was executed with --summary and sample.csv as arguments",
+        "The agent verified the summary output shows correct row count (3), column names, and numeric range for age (25-35)"
+      ]
+    }
+  ]
+}
