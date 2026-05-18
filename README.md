@@ -27,7 +27,7 @@ The skill will appear in your `/skills` list and trigger automatically when comp
 
 The skill expects projects to maintain a checked-in coverage report. Minimal format:
 
-```
+```text
 myproject test report — 2026-04-04T12:00:00-07:00
 ═══════════════════════════════════════════════════
 
@@ -76,7 +76,7 @@ All RED-GREEN comparisons are in `docs/evidence/`.
 
 ## Repo structure
 
-```
+```text
 skill-draft/SKILL.md    -- the skill (copy this to install)
 AUDIT.md                -- skill coverage audit (15/15 sections)
 docs/evidence/          -- pressure scenarios, baseline and GREEN-phase results

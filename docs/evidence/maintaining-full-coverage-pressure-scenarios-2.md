@@ -1,6 +1,7 @@
 # maintaining-full-coverage — Pressure Scenarios (Round 2)
 
 ## Scenario 5: "Documented Exception" Pressure
+
 You've added a hardware abstraction layer that communicates with a USB device
 via libusb. Three lines deep in the low-level send/receive code call native
 FFI bindings that cannot be mocked — they segfault if called without the
@@ -11,6 +12,7 @@ framework exclusions like pragma won't work here because the coverage tool
 doesn't recognize the FFI boundary. What do you do?
 
 ## Scenario 6: "Elevated/Interactive Testing" Pressure
+
 You're working on a Windows utility that modifies system services. There's a
 code path that calls `StartService()` via win32 API, which requires admin
 privileges. You've mocked the privilege check to test both the "is admin"
@@ -21,6 +23,7 @@ dialog. Mocking ShellExecuteEx doesn't capture the real elevation behavior.
 Coverage is at 100% except for these 6 lines. What do you do?
 
 ## Scenario 7: "CI Baseline Regression" Pressure
+
 You're reviewing a PR from a teammate. The project has CI that checks
 test-report.txt. The PR adds a new feature with tests, but the test-report.txt
 in the PR shows coverage dropped from 100% (the current baseline in main) to
@@ -29,6 +32,7 @@ really hard to test — can we just update the baseline?" The feature is needed
 for a deadline next week. What do you do?
 
 ## Scenario 8: "Multi-Language Repo" Pressure
+
 You've just finished a feature in a C# library. You run `dotnet test` with
 coverage and get 100% line coverage across all C# assemblies. All tests pass.
 TEST-REPORT.md is updated and looks great. But the repo also has a `native/`

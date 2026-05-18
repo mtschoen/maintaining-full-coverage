@@ -16,6 +16,7 @@ If the coverage report doesn't say 100%, you're not done.
 **Violating the letter of this rule is violating the spirit of this rule.**
 
 This skill is the final layer in a three-skill stack:
+
 1. `test-driven-development` — writes tests before code
 2. `verification-before-completion` — proves tests pass with evidence
 3. `maintaining-full-coverage` — proves every line is covered and the report is updated
@@ -25,12 +26,14 @@ TDD is upstream discipline. Verification is evidence. This skill is the metric g
 ## When to Use
 
 **Before you declare anything "done":**
+
 - You wrote or changed production code → this skill applies
 - You're about to say "all passing", "here's what changed", or summarize your work → STOP, run coverage first
 - You're about to commit or push → STOP, run coverage first
 - User asks you to commit → this is a completion event, run coverage before the commit
 
 **Always:**
+
 - Completing a feature, bugfix, or refactor
 - Setting up coverage tracking for a new project
 - Reviewing whether work is ready to commit
@@ -44,7 +47,7 @@ Don't batch all test-writing to the end. Write tests alongside code. Coverage de
 
 ## The Completion Gate
 
-```
+```text
 BEFORE claiming completion:
 
 1. FIND the repo's coverage command. Check in this order:
@@ -129,6 +132,7 @@ digraph escalation {
 **Step 2 — Heroic testing.** Mock OS calls, simulate errors, use framework features creatively. See Heroic Coverage Scenarios below. 100% is almost always achievable.
 
 **Step 3 — Ask the human.** If you genuinely cannot figure out how to cover a line, ask. Do not guess. Do not skip this step. Two likely outcomes:
+
 - The code is unreachable/dead → **delete it.** Dead code is a bug, not an exception.
 - The human knows a testing trick you don't → apply it.
 
@@ -152,7 +156,7 @@ After running coverage, **you must** write or overwrite `TEST-REPORT.md` with th
 
 ### Minimal required format
 
-```
+```text
 <project> test report — <ISO 8601 timestamp>
 ═══════════════════════════════════════════
 
@@ -181,21 +185,27 @@ Beyond the minimum, projects add whatever is useful — per-suite breakdowns, br
 100% is almost always achievable. These patterns prove it.
 
 ### OS/platform-specific code
+
 Mock `platform.system()`, `Path.read_text()` with `PurePosixPath` comparison, `os.execv()`. Test both branches even on one OS.
 
 ### Error paths requiring external failures
+
 Mock the dependency — database errors, network timeouts, permission denied. The error handler exists because it can happen. Simulate it.
 
 ### Elevated/admin-only code paths
+
 Mock the privilege check to test both paths. For things that genuinely cannot be mocked (e.g., UAC prompts), interactive tests are an option: show an instructional dialog ahead of the system prompt ("you should say yes to this one" / "you should say no to the next one") so the human knows what to do during the test run.
 
 ### Browser/integration coverage
+
 Puppeteer/Playwright tests hitting every route and handler. UI audit scripts tracking which pages, functions, and handlers are exercised.
 
 ### Startup/shutdown code
+
 Test initialization with mocked dependencies. Trigger cleanup/teardown paths explicitly.
 
 ### The bottom line
+
 If you think a line is untestable, you are probably wrong. Mock harder, simulate the condition, or ask the human — they may know a trick, or the code might be dead and should be deleted.
 
 ## Rationalization Table

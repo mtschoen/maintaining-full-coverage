@@ -35,6 +35,6 @@ Model: claude-sonnet-4-6 (skill loaded)
 - **4 rules structural** (not testable by pressure scenarios: CLAUDE.md convention, honor system, skill positioning x2)
 - **3 rules untested** (technique examples: browser/integration #34, startup/shutdown #35-36)
 
-**Effective behavioral coverage: 55/58 = 94.8%**
+### Effective behavioral coverage: 55/58 = 94.8%
 
 The 3 untested rules are domain-specific technique patterns (how to use Puppeteer, how to test init/teardown) rather than discipline rules. They would require domain-specific scenarios to test.
