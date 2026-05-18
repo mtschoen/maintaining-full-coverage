@@ -21,6 +21,7 @@ Question 1 without question 2 is not a smoke test. Passing the build is necessar
 ## When to Smoke Test
 
 **Every time**, before you tell the user the work is done. This includes:
+
 - Feature implementation
 - Bug fixes
 - Refactors (yes, even "safe" ones)
@@ -38,7 +39,7 @@ The right smoke test depends on what you changed and what kind of project it is.
 
 **Floor:** Build the project. The full solution, not just the file you changed — dependency errors hide in other projects.
 
-```
+```text
 dotnet build                    # .NET
 msbuild /p:Configuration=Debug  # C++/MSBuild
 go build ./...                  # Go
@@ -52,7 +53,7 @@ mvn compile                     # Java/Maven
 
 **Floor:** Make sure the dev server starts without errors.
 
-```
+```text
 npm run dev    # or yarn dev, pnpm dev
 ```
 
@@ -64,7 +65,7 @@ npm run dev    # or yarn dev, pnpm dev
 
 **Bar:** Hit the endpoint you changed. Use `curl`, `wget`, or the project's existing HTTP test client. Verify the response is what you expect — status code, response body, not just "no error."
 
-```
+```text
 curl -s http://localhost:3000/api/your-endpoint | head -20
 ```
 
@@ -72,7 +73,7 @@ curl -s http://localhost:3000/api/your-endpoint | head -20
 
 **Floor:** Run a batch-mode compile. This catches script errors without needing the Editor open.
 
-```
+```text
 Unity -batchmode -nographics -projectPath . -logFile - -quit
 ```
 
@@ -88,7 +89,7 @@ Unity -batchmode -nographics -projectPath . -logFile - -quit
 
 **Floor:** Validate the config syntax.
 
-```
+```text
 docker compose config           # Docker Compose
 terraform validate              # Terraform
 yamllint .github/workflows/     # GitHub Actions
@@ -100,7 +101,7 @@ yamllint .github/workflows/     # GitHub Actions
 
 **Floor and bar are the same:** Run the tests. All of them, not just the one you changed — you might have broken a shared fixture.
 
-```
+```text
 dotnet test
 npm test
 pytest
