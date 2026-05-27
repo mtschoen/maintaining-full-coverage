@@ -140,6 +140,30 @@ digraph escalation {
 
 **Step 5 — Documented exceptions.** Absolute last resort. The report file explicitly lists what's uncovered and why. This becomes the new baseline that other work must meet.
 
+### Restructure beats suppress (worked example)
+
+Step 4's bias against coverage exclusions extends to **static-analysis suppressions** — `[SuppressMessage]`, `// ReSharper disable`, `NOLINT`. A warning you're tempted to silence often points at a real structural problem; restructuring to satisfy it can surface a genuine bug instead of hiding one. Never mass-suppress a category as "technically false positives" — demand a per-case justification for the rare real one.
+
+In git-wizard (C#), a JetBrains `AccessToDisposedClosure` inspection flagged 18 sites. Bulk suppression was tempting; the structural fix was better. On the dominant pattern, moving the `using` inside the lambda makes test lifetime explicit in code instead of asserted in a comment:
+
+```csharp
+// Before — analyzer flags the disposable captured by the lambda
+using var volume = new Volume(...);
+Assert.ThrowsException<X>(() => volume.DoSomething());
+
+// After — `using` inside the lambda; lifetime is explicit, warning gone
+Assert.ThrowsException<X>(() => { using var volume = new Volume(...); volume.DoSomething(); });
+```
+
+For a callback stored on a longer-lived object, capture the **value** you need, not the disposable:
+
+```csharp
+var uiThreadId = dispatcher.UiThreadId;     // capture the value up front, not the disposable
+obj.Callback = () => ranOnUi = Environment.CurrentManagedThreadId == uiThreadId;
+```
+
+Both eliminate the warning because the analyzer's premise no longer holds — and read better than the original. Suppression hides the smell; restructuring removes it.
+
 ## Report File Convention
 
 Every project maintains a checked-in coverage report at the **repo root** named `TEST-REPORT.md`. If a project already has a report file under a different name, use that. Otherwise, create `TEST-REPORT.md`.

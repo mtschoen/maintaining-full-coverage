@@ -7,18 +7,18 @@ A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that gates
 When loaded, this skill enforces three things:
 
 1. **Coverage must be 100% before you claim done.** No rounding, no "close enough."
-2. **A checked-in report file** tracks coverage over time. `git diff test-report.txt` catches regressions instantly.
+2. **A checked-in report file** tracks coverage over time. `git diff TEST-REPORT.md` catches regressions instantly.
 3. **A strict escalation ladder** when coverage drops: write tests, heroic testing, ask the human, framework exclusions (with approval), documented exceptions (last resort).
 
 The skill layers on top of `test-driven-development` (write tests first) and `verification-before-completion` (prove tests pass). This skill closes the loop on the metric.
 
 ## Install
 
-Copy `skill-draft/SKILL.md` to your Claude Code skills directory:
+Copy `SKILL.md` to your Claude Code skills directory:
 
 ```bash
 mkdir -p ~/.claude/skills/maintaining-full-coverage
-cp skill-draft/SKILL.md ~/.claude/skills/maintaining-full-coverage/SKILL.md
+cp SKILL.md ~/.claude/skills/maintaining-full-coverage/SKILL.md
 ```
 
 The skill will appear in your `/skills` list and trigger automatically when completing work in projects that track coverage.
@@ -77,7 +77,7 @@ All RED-GREEN comparisons are in `docs/evidence/`.
 ## Repo structure
 
 ```text
-skill-draft/SKILL.md    -- the skill (copy this to install)
+SKILL.md                -- the skill (copy this to install)
 AUDIT.md                -- skill coverage audit (15/15 sections)
 docs/evidence/          -- pressure scenarios, baseline and GREEN-phase results
 ```
