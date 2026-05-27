@@ -6,6 +6,7 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 
 - [x] Completion gate — each of the 5 steps
 - [x] Escalation ladder — each of the 5 tiers, plus the "never skip" constraint
+- [x] Restructure over exclude — restructure production code before reaching for exclusions or analyzer suppressions
 - [x] Report file — treated as first-class artifact, updated now not later, committed alongside code
 - [x] Report file — CI rejection of regressions, exemption/baseline process
 - [x] Report file — git hash placement, minimal format fields (verified via sample report generation)

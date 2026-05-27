@@ -140,9 +140,27 @@ digraph escalation {
 
 **Step 5 — Documented exceptions.** Absolute last resort. The report file explicitly lists what's uncovered and why. This becomes the new baseline that other work must meet.
 
-### Restructure beats suppress (worked example)
+## Restructure Over Exclude
 
-Step 4's bias against coverage exclusions extends to **static-analysis suppressions** — `[SuppressMessage]`, `// ReSharper disable`, `NOLINT`. A warning you're tempted to silence often points at a real structural problem; restructuring to satisfy it can surface a genuine bug instead of hiding one. Never mass-suppress a category as "technically false positives" — demand a per-case justification for the rare real one.
+Before reaching for an exclusion (escalation step 4) or a static-analysis suppression, ask whether restructuring the production code eliminates the problem outright. When code tangles things that shouldn't be tangled — startup side effects, untestable singletons, network calls inline with business logic — refactor rather than excluding tests or weakening assertions. This is the same lever as deleting dead code: it improves the codebase, and restructuring to be testable is not overkill.
+
+### Uncovered branches
+
+A coverage tool counts a synthetic branch the cooperative-cancellation idiom never reaches. Restructure to remove the branch rather than excluding the line:
+
+```kotlin
+// Before: Kover counts the while-false branch as uncovered
+while (isActive) { delay(1000); evictExpired() }
+
+// After: no unreachable branch (delay() throws CancellationException on cancellation)
+while (true) { delay(1000); evictExpired() }
+```
+
+The `while (isActive)` form has a false branch the tool can't reach (cancellation is by exception, never by loop exit); `while (true)` eliminates it without changing behavior. The same shape recurs across languages — Python's `asyncio.CancelledError` (`while running:` → `while True:`) and .NET's `CancellationToken.ThrowIfCancellationRequested()` inside `while (true)` (replacing `while (!token.IsCancellationRequested)`).
+
+### Analyzer suppressions
+
+The same bias extends to static-analysis suppressions — `[SuppressMessage]`, `// ReSharper disable`, `NOLINT`. A warning you're tempted to silence often points at a real structural problem; restructuring to satisfy it can surface a genuine bug instead of hiding one. Never mass-suppress a category as "technically false positives" — demand a per-case justification for the rare real one.
 
 In git-wizard (C#), a JetBrains `AccessToDisposedClosure` inspection flagged 18 sites. Bulk suppression was tempting; the structural fix was better. On the dominant pattern, moving the `using` inside the lambda makes test lifetime explicit in code instead of asserted in a comment:
 
@@ -163,6 +181,10 @@ obj.Callback = () => ranOnUi = Environment.CurrentManagedThreadId == uiThreadId;
 ```
 
 Both eliminate the warning because the analyzer's premise no longer holds — and read better than the original. Suppression hides the smell; restructuring removes it.
+
+### The legitimate exclusion case
+
+Exclusion is correct for genuinely-untestable framework bindings — Android `MediaCodec`, `NSDManager`, XR Compose composables that require a running platform. Exclude those *specifically*, never whole-class blanket exclusions on production logic. If an exclusion attribute lands on a class whose name doesn't end in `Binding`, `Adapter`, or a similar platform-glue suffix, that's a smell that wants restructuring first.
 
 ## Report File Convention
 
