@@ -7,7 +7,7 @@ description: "Use when: user mentions coverage, lint, linter, static analysis, c
 
 ## Overview
 
-If the coverage report doesn't say 100% — or the linter has findings — you're not done.
+If the coverage report doesn't say 100% — or the linter has findings — you're not done. *(Unless the project never reached that bar and your current task isn't to get it there. Which of those you're in changes what "done" means — see Three Modes below.)*
 
 **Core principle:** Every line of production code must be (a) exercised by a test and (b) clean against every linter/analyzer the project has configured. Uncovered lines are either untested (write a test) or unreachable (delete them). Lint findings are either real (fix them, ideally by restructuring) or genuine false positives (suppress per-case with explicit approval).
 
@@ -27,6 +27,25 @@ This skill is the final layer in a three-skill stack:
 
 TDD is upstream discipline. Verification is evidence. This skill is the metric gate.
 
+## Three Modes: what "the bar" means here
+
+The 100%-coverage / 0-findings bar is the destination. Whether *this task* must arrive there depends on where the project starts and what you were asked to do. **Read the project's current state first** — the checked-in `TEST-REPORT.md` (if any) plus a fresh coverage + lint run — then place yourself in one of three modes:
+
+**1. Maintain — the project is already clean.** Coverage is 100% and every configured linter reports 0 findings (the report says so and a fresh run confirms it). The bar is absolute: hold it. Your change must not drop coverage below 100% and must not add a single finding. This is the strict gate — a regression here is blocked, full stop. Everything below about the completion gate and escalation ladder applies at full strength.
+
+**2. Close the gap — reaching the bar IS the task.** The project isn't at 100% / 0 findings, and the user asked you to get it there ("add coverage", "clean up the lint", "get this to green", "set up the gate"). Then 100% / 0 is the deliverable and the full escalation ladder applies to every uncovered line and every finding — same strict bar as Maintain, because reaching it is the point.
+
+**3. Best effort — the project is dirty and you're doing something else.** The project is below 100% / has findings, and your task is a feature, bugfix, or refactor — not a coverage/lint cleanup. Demanding the *whole repo* reach 100% before you can finish an unrelated feature is the hardline mistake this mode exists to prevent. The bar here is a **ratchet, not an absolute**:
+
+- **Cover and clean what you touch.** New and changed production code gets tests and is lint-clean. You don't get to add debt just because debt already exists.
+- **Don't regress the baseline.** Coverage percentage must not fall and the finding count must not rise versus the checked-in report. Those numbers are the floor.
+- **Surface pre-existing debt; don't silently inherit it.** The 1,244 findings you didn't create aren't a blocker for *this* task — but record them in the report as the baseline and flag them (suggest a cleanup task). Don't pretend they're absent, and don't let them quietly grow.
+- The escalation ladder still governs *your own* uncovered lines and findings. Best effort is not a license to skip testing the code you just wrote.
+
+**When the mode is ambiguous, ask.** If the project is dirty and you can't tell whether the user wants gap-closing (mode 2) or best-effort-on-a-feature (mode 3), ask which — one short question. Don't silently default to the hardline (you'll block an unrelated task on inherited debt) and don't silently default to lax (you'll let a project that wanted cleanup stay dirty).
+
+The report file records which mode applied and the baseline it measured against, so the next session knows whether a number is a ceiling to hold or a floor to ratchet up from.
+
 ## When to Use
 
 **Before you declare anything "done":**
@@ -42,7 +61,7 @@ TDD is upstream discipline. Verification is evidence. This skill is the metric g
 - Setting up coverage tracking for a new project
 - Reviewing whether work is ready to commit
 
-**The test you wrote passing is not the finish line. 100% suite-wide coverage is the finish line.**
+**The test you wrote passing is not the finish line. 100% suite-wide coverage is the finish line** — in a project at or chasing that bar. In a below-bar project where coverage cleanup isn't the task, the finish line is: your new code covered, the baseline not regressed (see Three Modes).
 
 **Throughout development (the nudge):**
 While coding, periodically ask yourself: "If I ran coverage right now, would the code I just wrote be covered?" Every `if` has at least two paths. Every `try` has an `except`. Every early `return` has a condition that triggers it. Are both branches tested?
@@ -93,6 +112,8 @@ BEFORE claiming completion:
 
 The report file is a first-class artifact. It is not an afterthought. Write it and commit it as part of your work, not as a cleanup step later.
 
+Step 5 above ("Is it 100%? NO → don't claim completion") is written for Maintain and Close-the-Gap mode. In Best-Effort mode the test is different: *did I cover the code I touched, and did I hold the baseline?* If yes, you're done for this task even though the absolute number is below 100% — record the baseline in the report (mode `best-effort`) and surface the remaining gap. See Three Modes.
+
 ## The Lint Gate
 
 The completion gate above checks coverage. There is a second gate, run in the same place in the workflow (before declaring done, before committing, before saying "all passing/clean"), against the project's linters and static analyzers.
@@ -132,7 +153,7 @@ BEFORE claiming completion:
 8. ONLY after the report is written and committed: done.
 ```
 
-**The bar is 0 findings, matching the 100% coverage bar.** Pre-existing findings count — if the repo has 1000 ruff warnings, that's debt that enters the Escalation Ladder the same way uncovered branches do. Most findings can be fixed outright. Some surface real bugs (treat them as evidence — investigate before suppressing). The genuinely-intractable ones get per-case documented exceptions.
+**The bar is 0 findings, matching the 100% coverage bar — read through the active mode (see Three Modes).** In Maintain or Close-the-Gap mode, pre-existing findings count: 1000 ruff warnings is debt that enters the Escalation Ladder the same way uncovered branches do. In Best-Effort mode, you don't have to clear inherited findings to finish an unrelated task — but you don't add new ones, you don't let the count climb, and you record the baseline and surface the debt rather than silently inheriting it. Most findings can be fixed outright. Some surface real bugs (treat them as evidence — investigate before suppressing). The genuinely-intractable ones get per-case documented exceptions.
 
 **Handling the reactive side of the ladder:** see `Restructure Over Exclude` below — when a finding tempts you to reach for `[SuppressMessage]` / `// ReSharper disable` / `NOLINT` / `# noqa` / `eslint-disable`, restructure first.
 
@@ -254,6 +275,7 @@ After running coverage, **you must** write or overwrite `TEST-REPORT.md` with th
 ═══════════════════════════════════════════
 
 Status:   PASS | FAIL
+Mode:     maintain | close-the-gap | best-effort
 Tests:    <total> total
 Git:      <short hash> (<branch or commit message>)
 Coverage: <covered>/<total> statements (<pct>%)
@@ -265,7 +287,12 @@ Lint:     <tool>: <N> findings (<N> errors, <N> warnings)
           <N> documented exceptions
 ```
 
-The **Lint** block is required when the project has any linter or analyzer configured. List every configured tool — `ruff`, `mypy`, `eslint`, `clang-tidy`, `inspectcode`/`jbinspect`, `golangci-lint`, Roslyn analyzers, etc. Status is `PASS` only when both coverage is 100% AND every tool reports 0 findings (per-case suppressions and documented exceptions count as cleared, same as `pragma: no cover` does for coverage).
+The **Lint** block is required when the project has any linter or analyzer configured. List every configured tool — `ruff`, `mypy`, `eslint`, `clang-tidy`, `inspectcode`/`jbinspect`, `golangci-lint`, Roslyn analyzers, etc.
+
+The **Mode** line records which of the Three Modes governed this run, so a future reader knows whether a number is a ceiling to hold or a floor to ratchet up from. `Status` is defined relative to that mode:
+
+- **maintain / close-the-gap:** `PASS` only when coverage is 100% AND every tool reports 0 findings (per-case suppressions and documented exceptions count as cleared, same as `pragma: no cover` does for coverage).
+- **best-effort:** `PASS` when your changed code is covered and lint-clean AND the baseline did not regress (coverage % didn't drop, finding count didn't rise). Record the inherited baseline (e.g. `Coverage: 312/400 (78%) — baseline held`, `Lint: eslint 1244 findings (pre-existing baseline, +0 this change)`) so the ratchet is auditable. A best-effort `PASS` is honest about not being at the absolute bar; it is not a `FAIL`.
 
 Beyond the minimum, projects add whatever is useful — per-suite breakdowns, branch coverage, UI audit stats, timing.
 
@@ -326,7 +353,7 @@ If you think a line is untestable, you are probably wrong. Mock harder, simulate
 | "I got 100% on the C# / Python / main language" | That's 100% of ONE language. Check ALL languages in the repo. Every language needs its own coverage tooling. |
 | "It's just a lint warning, not a real bug" | Sometimes true; often the linter found something you missed. Investigate before suppressing. The bug-surfacing case is exactly why the gate exists. |
 | "The linter is wrong / it's a false positive" | False positives are real but rare. Restructure the code so the analyzer's premise no longer holds (see Restructure Over Exclude). Per-case suppression requires human approval. |
-| "Lint debt is pre-existing, not my problem" | Same gate as coverage debt: enter the Escalation Ladder. Pre-existing findings get per-case suppressions or documented exceptions in the report, not silent ignoring. |
+| "Lint debt is pre-existing, not my problem" | Depends on mode. Maintain / close-the-gap: it's your problem — enter the Escalation Ladder. Best-effort on an unrelated task: you needn't clear inherited debt, but you don't add to it, don't let the count grow, and you record + surface the baseline rather than silently ignoring it. |
 | "Running jbinspect / clang-tidy / mypy is too slow" | Run it anyway. "Slow" is not a step in the Escalation Ladder. If you must defer, raise it with the human — don't skip silently. |
 | "The project doesn't lint" | Did you check? `pyproject.toml`, `package.json`, `.clang-tidy`, `*.sln`, `.pre-commit-config.yaml`, CI workflows — verify before assuming. |
 

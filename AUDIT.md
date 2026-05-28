@@ -20,13 +20,18 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 - [x] Red flags — each test/coverage-related flag triggered by at least one scenario (including hollow coverage)
 - [x] Dead code detection — agent considers deletion, not just exclusion
 - [x] Multi-language repos — agent scans for ALL languages, sets up coverage per language
-- [ ] Lint gate — discovery (CLAUDE.md → project config → CI → ask human before assuming "no lint")
-- [ ] Lint gate — all-languages verification + zero-findings bar (parallels coverage's all-languages rule)
-- [ ] Lint gate — "slow linters (jbinspect, full clang-tidy) — run anyway" discipline; "slow" not in escalation ladder
-- [ ] Lint gate — pre-existing lint debt routed through escalation ladder + per-case suppression / documented exception
-- [ ] Report file — Lint section required when any linter configured; per-tool listing, suppressions + exceptions counted
-- [ ] Rationalization table — each lint-specific row (5 new) exercised by at least one scenario
-- [ ] Red flags — each lint-specific flag (3 new) triggered by at least one scenario
+- [x] Lint gate — discovery (CLAUDE.md → project config → CI → ask human before assuming "no lint")
+- [x] Lint gate — all-languages verification + zero-findings bar (parallels coverage's all-languages rule)
+- [x] Lint gate — "slow linters (jbinspect, full clang-tidy) — run anyway" discipline; "slow" not in escalation ladder
+- [x] Lint gate — pre-existing lint debt routed through escalation ladder + per-case suppression / documented exception
+- [x] Report file — Lint section required when any linter configured; per-tool listing, suppressions + exceptions counted
+- [x] Rationalization table — each lint-specific row (5 new) exercised by at least one scenario
+- [x] Red flags — each lint-specific flag (3 new) triggered by at least one scenario
+- [x] Three Modes — maintain (hold absolute bar on a clean project)
+- [x] Three Modes — close-the-gap (reaching the bar IS the task → insist on 100%)
+- [x] Three Modes — best-effort (dirty project + unrelated task → ratchet: cover-what-you-touch, don't regress, surface debt)
+- [x] Three Modes — ambiguous mode resolved by asking, not silent default
+- [x] Report file — Mode line recorded; best-effort Status semantics (PASS when own code clean + baseline held)
 
 ## Scenario inventory
 
@@ -43,5 +48,18 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 | 9: Startup/Shutdown (daemon) | Mock init deps, trigger teardown explicitly |
 | 10: Hollow Coverage (review) | Red flag: tests that cover without testing meaningful behavior |
 | 11: Multi-Language Repo (C#/C++) | All-language principle, step 2 language scan, multi-language rationalization/red flags |
+| 12: Project Doesn't Lint (discovery) | Lint discovery order, "doesn't lint — did you check?", declare-clean-without-running red flag |
+| 13: Slow Linter (inspectcode) | "Slow" not in ladder, run-anyway discipline |
+| 14: Pre-existing Lint Debt (eslint 1,244) | Zero-findings bar, pre-existing debt → ladder, per-case suppression / documented exception, report Lint section |
+| 15: It's Just a Warning (mypy false positive) | Bug-surfacing framing, restructure-over-suppress, human-approval-before-suppress, noqa-before-restructure red flag |
+| 16: Multi-Language Lint + Report | All-languages lint verification, report Lint block per-tool listing |
+| 17: Best-Effort on a Dirty Project | Best-effort mode, ratchet (cover-what-you-touch, hold baseline, surface debt) |
+| 18: Ambiguous Mode | Mode ambiguity → ask, then apply correct bar; Mode line in report |
 
-## Coverage: 16/23 sections covered (7 unchecked = lint-gate expansion; needs new pressure scenarios)
+## Coverage: 28/28 sections covered
+
+- Lint-gate expansion evaluated 2026-05-28 (see `green-results-3.md`).
+- Three-Modes softening evaluated 2026-05-28 (see `modes-results.md`): old skill
+  (hardline) vs new skill (mode-aware) on scenarios 14/17/18. Best-effort no
+  longer blocks unrelated work on inherited debt; ratchet and maintain-mode
+  strictness preserved.
