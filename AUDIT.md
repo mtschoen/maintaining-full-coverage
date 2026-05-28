@@ -16,10 +16,17 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 - [x] Heroic: elevated/interactive tests with instructional dialogs
 - [x] Heroic: browser/integration coverage
 - [x] Heroic: startup/shutdown testing
-- [x] Rationalization table — each row exercised by at least one scenario
-- [x] Red flags — each flag triggered by at least one scenario (including hollow coverage)
+- [x] Rationalization table — each test/coverage-related row exercised by at least one scenario
+- [x] Red flags — each test/coverage-related flag triggered by at least one scenario (including hollow coverage)
 - [x] Dead code detection — agent considers deletion, not just exclusion
 - [x] Multi-language repos — agent scans for ALL languages, sets up coverage per language
+- [ ] Lint gate — discovery (CLAUDE.md → project config → CI → ask human before assuming "no lint")
+- [ ] Lint gate — all-languages verification + zero-findings bar (parallels coverage's all-languages rule)
+- [ ] Lint gate — "slow linters (jbinspect, full clang-tidy) — run anyway" discipline; "slow" not in escalation ladder
+- [ ] Lint gate — pre-existing lint debt routed through escalation ladder + per-case suppression / documented exception
+- [ ] Report file — Lint section required when any linter configured; per-tool listing, suppressions + exceptions counted
+- [ ] Rationalization table — each lint-specific row (5 new) exercised by at least one scenario
+- [ ] Red flags — each lint-specific flag (3 new) triggered by at least one scenario
 
 ## Scenario inventory
 
@@ -37,4 +44,4 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 | 10: Hollow Coverage (review) | Red flag: tests that cover without testing meaningful behavior |
 | 11: Multi-Language Repo (C#/C++) | All-language principle, step 2 language scan, multi-language rationalization/red flags |
 
-## Coverage: 16/16 sections covered
+## Coverage: 16/23 sections covered (7 unchecked = lint-gate expansion; needs new pressure scenarios)

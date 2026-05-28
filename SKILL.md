@@ -1,17 +1,21 @@
 ---
 name: maintaining-full-coverage
-description: "Use when: user mentions coverage, 100% coverage, coverage gate, test report, or TEST-REPORT.md; BEFORE declaring work done, summarizing what you built, or saying 'all passing/working/done'; BEFORE committing or pushing; completing any feature/bugfix/refactor in a project that tracks test coverage; establishing coverage tracking for a new project. If you wrote or changed production code, this skill applies — no exceptions."
+description: "Use when: user mentions coverage, lint, linter, static analysis, code quality checks, 100% coverage, coverage gate, lint baseline, test report, TEST-REPORT.md, or 'is the build clean'; BEFORE declaring work done, summarizing what you built, or saying 'all passing/working/done/clean'; BEFORE committing or pushing; completing any feature/bugfix/refactor in a project that tracks test coverage OR has linters/analyzers configured (ruff, eslint, mypy, clang-tidy, jbinspect/inspectcode, golangci-lint, Roslyn analyzers, etc.); establishing coverage or lint tracking for a new project. If you wrote or changed production code, this skill applies — no exceptions."
 ---
 
 # Maintaining Full Coverage
 
 ## Overview
 
-If the coverage report doesn't say 100%, you're not done.
+If the coverage report doesn't say 100% — or the linter has findings — you're not done.
 
-**Core principle:** Every line of production code must be exercised by a test. Uncovered lines are either untested (write a test) or unreachable (delete them).
+**Core principle:** Every line of production code must be (a) exercised by a test and (b) clean against every linter/analyzer the project has configured. Uncovered lines are either untested (write a test) or unreachable (delete them). Lint findings are either real (fix them, ideally by restructuring) or genuine false positives (suppress per-case with explicit approval).
 
-**This means ALL code, in ALL languages, in the ENTIRE repo.** A C# project with a C++ native library needs 100% coverage in both C# and C++. A Python backend with a JavaScript frontend needs 100% coverage in both Python and JavaScript. If production code exists in the repo and it's in a language you can compile/run, it needs coverage tooling and tests. No language gets a pass.
+**Tests are not the only validators.** "Coverage" here means *covering the code with every check the project has* — tests for behavior, linters and analyzers for structure, type checkers for types. They're the same shape in the completion gate: machine-verifiable checked properties that must report clean before you declare done. Run them all, gate on all of them, restructure rather than suppress.
+
+**Why this matters most:** Tests and linters earn their keep when they *accidentally surface real bugs*. A "unused variable" warning can reveal a typo that broke a code path. A `nullable` analyzer flagging a deref can pinpoint a real crash you missed. An uncovered branch can mean the condition is unreachable — i.e. dead code, often a bug. The discipline isn't paperwork; it's a structured way to make latent bugs visible. Treat findings as evidence first, noise second.
+
+**This means ALL code, in ALL languages, in the ENTIRE repo.** A C# project with a C++ native library needs 100% coverage in both C# and C++, and Roslyn analyzers on the C# AND clang-tidy on the C++. A Python backend with a JavaScript frontend needs coverage.py + istanbul/c8 AND ruff + eslint. If production code exists in the repo and it's in a language you can compile/run, it needs coverage tooling, lint tooling, and tests. No language gets a pass.
 
 **Violating the letter of this rule is violating the spirit of this rule.**
 
@@ -19,7 +23,7 @@ This skill is the final layer in a three-skill stack:
 
 1. `test-driven-development` — writes tests before code
 2. `verification-before-completion` — proves tests pass with evidence
-3. `maintaining-full-coverage` — proves every line is covered and the report is updated
+3. `maintaining-full-coverage` — proves every line is covered AND every analyzer reports clean, and the report is updated
 
 TDD is upstream discipline. Verification is evidence. This skill is the metric gate.
 
@@ -89,9 +93,52 @@ BEFORE claiming completion:
 
 The report file is a first-class artifact. It is not an afterthought. Write it and commit it as part of your work, not as a cleanup step later.
 
+## The Lint Gate
+
+The completion gate above checks coverage. There is a second gate, run in the same place in the workflow (before declaring done, before committing, before saying "all passing/clean"), against the project's linters and static analyzers.
+
+```text
+BEFORE claiming completion:
+
+1. FIND the project's linters / static analyzers. Check in this order:
+   a. CLAUDE.md — look for a documented lint command
+   b. Project config — pyproject.toml [tool.ruff]/[tool.mypy], package.json
+      (`lint` / `eslint` scripts), .clang-tidy, *.sln + .editorconfig
+      (Roslyn analyzers), .resharper.dotsettings (JetBrains inspections),
+      golangci.yml, .rubocop.yml, etc.
+   c. Pre-commit / CI config — .pre-commit-config.yaml, .github/workflows,
+      .gitea/workflows
+   d. If the language has a standard linter (ruff for Python, eslint for
+      JS/TS, golangci-lint for Go, clang-tidy for C/C++, etc.) and none is
+      configured, ASK the human whether to add one — don't silently assume
+      "this project doesn't lint."
+2. VERIFY the linter covers all production code IN EVERY LANGUAGE (same
+   all-languages logic as the coverage gate). A multi-language repo needs
+   each language's checker, not just the dominant language's.
+3. RUN it — full repo, all configured rules, no cache. Slow linters
+   (jbinspect/inspectcode, full-repo clang-tidy) can take minutes; run
+   them anyway. "It's slow" is not in the Escalation Ladder.
+4. READ the output — findings count, severity, locations. Don't just
+   check exit code; count findings.
+5. Is the count 0?
+   - YES → continue to step 6
+   - NO  → enter the Escalation Ladder below. Same shape as coverage:
+           fix the code → restructure (see Restructure Over Exclude) →
+           ask the human → per-case suppression with approval →
+           documented exception in the report file.
+           Do NOT suppress to declare done.
+6. UPDATE `TEST-REPORT.md` with the Lint section (see Report File Convention).
+7. COMMIT the updated report alongside your other changes.
+8. ONLY after the report is written and committed: done.
+```
+
+**The bar is 0 findings, matching the 100% coverage bar.** Pre-existing findings count — if the repo has 1000 ruff warnings, that's debt that enters the Escalation Ladder the same way uncovered branches do. Most findings can be fixed outright. Some surface real bugs (treat them as evidence — investigate before suppressing). The genuinely-intractable ones get per-case documented exceptions.
+
+**Handling the reactive side of the ladder:** see `Restructure Over Exclude` below — when a finding tempts you to reach for `[SuppressMessage]` / `// ReSharper disable` / `NOLINT` / `# noqa` / `eslint-disable`, restructure first.
+
 ## The Escalation Ladder
 
-When coverage is below 100%, follow this order. **Never skip steps.**
+When either gate fails (coverage <100% or any lint finding), follow this order. **Never skip steps.**
 
 ```dot
 digraph escalation {
@@ -212,7 +259,13 @@ Git:      <short hash> (<branch or commit message>)
 Coverage: <covered>/<total> statements (<pct>%)
           <N> lines uncovered
           <N> exclusion annotations
+Lint:     <tool>: <N> findings (<N> errors, <N> warnings)
+          [one line per configured tool]
+          <N> per-case suppressions
+          <N> documented exceptions
 ```
+
+The **Lint** block is required when the project has any linter or analyzer configured. List every configured tool — `ruff`, `mypy`, `eslint`, `clang-tidy`, `inspectcode`/`jbinspect`, `golangci-lint`, Roslyn analyzers, etc. Status is `PASS` only when both coverage is 100% AND every tool reports 0 findings (per-case suppressions and documented exceptions count as cleared, same as `pragma: no cover` does for coverage).
 
 Beyond the minimum, projects add whatever is useful — per-suite breakdowns, branch coverage, UI audit stats, timing.
 
@@ -271,6 +324,11 @@ If you think a line is untestable, you are probably wrong. Mock harder, simulate
 | "Both branches do the same thing, testing one is enough" | The coverage tool disagrees. Test both. |
 | "The C++/JS/other-language code is a separate concern" | If it's in the repo and it's production code, it needs 100% coverage. Set up the coverage tool for that language. |
 | "I got 100% on the C# / Python / main language" | That's 100% of ONE language. Check ALL languages in the repo. Every language needs its own coverage tooling. |
+| "It's just a lint warning, not a real bug" | Sometimes true; often the linter found something you missed. Investigate before suppressing. The bug-surfacing case is exactly why the gate exists. |
+| "The linter is wrong / it's a false positive" | False positives are real but rare. Restructure the code so the analyzer's premise no longer holds (see Restructure Over Exclude). Per-case suppression requires human approval. |
+| "Lint debt is pre-existing, not my problem" | Same gate as coverage debt: enter the Escalation Ladder. Pre-existing findings get per-case suppressions or documented exceptions in the report, not silent ignoring. |
+| "Running jbinspect / clang-tidy / mypy is too slow" | Run it anyway. "Slow" is not a step in the Escalation Ladder. If you must defer, raise it with the human — don't skip silently. |
+| "The project doesn't lint" | Did you check? `pyproject.toml`, `package.json`, `.clang-tidy`, `*.sln`, `.pre-commit-config.yaml`, CI workflows — verify before assuming. |
 
 ## Red Flags — STOP and Reconsider
 
@@ -286,3 +344,6 @@ If you think a line is untestable, you are probably wrong. Mock harder, simulate
 - Forgetting to test both branches of a conditional
 - Declaring 100% coverage when you only checked one language in a multi-language repo
 - Ignoring C++, JavaScript, or other secondary languages because the "main" language has full coverage
+- Reaching for `# noqa` / `eslint-disable` / `[SuppressMessage]` / `// ReSharper disable` / `NOLINT` before attempting to restructure (see Restructure Over Exclude)
+- Declaring "lint clean" without actually running the linter
+- Skipping the lint gate because "the project doesn't lint" without verifying via project config / CI
