@@ -74,7 +74,7 @@ Don't batch all test-writing to the end. Write tests alongside code. Coverage de
 BEFORE claiming completion:
 
 1. FIND the repo's coverage command. Check in this order:
-   a. CLAUDE.md — look for a documented coverage command
+   a. AGENTS.md or CLAUDE.md — look for a documented coverage command
    b. Scripts directory — look for run-coverage, coverage, or test scripts
       (e.g., scripts/run-coverage.ps1, scripts/coverage.sh)
    c. CI config — .github/workflows, Makefile, etc.
@@ -83,7 +83,7 @@ BEFORE claiming completion:
        all test directories, etc.)
    IMPORTANT: Coverage must include the ENTIRE repo, not a single project.
 2. VERIFY the command covers all production code IN EVERY LANGUAGE.
-   Do NOT trust CLAUDE.md or existing scripts blindly — they may be incomplete.
+   Do NOT trust AGENTS.md/CLAUDE.md or existing scripts blindly — they may be incomplete.
    a. Scan the repo for ALL production code across ALL languages
       (e.g., *.cs, *.cpp, *.h, *.js, *.ts, *.py, *.go, *.rs, etc.)
    b. For EACH language with production code, identify the coverage tool
@@ -122,7 +122,7 @@ The completion gate above checks coverage. There is a second gate, run in the sa
 BEFORE claiming completion:
 
 1. FIND the project's linters / static analyzers. Check in this order:
-   a. CLAUDE.md — look for a documented lint command
+   a. AGENTS.md or CLAUDE.md — look for a documented lint command
    b. Project config — pyproject.toml [tool.ruff]/[tool.mypy], package.json
       (`lint` / `eslint` scripts), .clang-tidy, *.sln + .editorconfig
       (Roslyn analyzers), .resharper.dotsettings (JetBrains inspections),
@@ -302,7 +302,7 @@ Beyond the minimum, projects add whatever is useful — per-suite breakdowns, br
 - **Checked into the repo.** Tracked in git history. `git diff` on the report instantly shows regressions.
 - **Updated whenever tests or coverage change.** Not "later" — now, as part of the work.
 - **Git hash above coverage results.** It establishes what code the numbers describe.
-- **CLAUDE.md documents the coverage command** and references `TEST-REPORT.md`.
+- **AGENTS.md (or CLAUDE.md) documents the coverage command** and references `TEST-REPORT.md`.
 - **With CI:** PRs that regress coverage are rejected unless an exemption grants a new baseline.
 - **Without CI:** Honor system, but git history still catches regressions.
 
