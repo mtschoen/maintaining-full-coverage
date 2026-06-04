@@ -1,0 +1,59 @@
+# docs-update
+
+A Claude Code skill that checks whether a finished, verified change made any documentation lie - README, CLAUDE.md / AGENTS.md, other in-repo docs, inline doc comments - before the agent declares work done or opens a PR.
+
+## Where it fits
+
+docs-update is the second step in the completion ritual, sequenced right after smoke-test:
+
+```text
+finish change -> smoke-test (does it work?) -> docs-update (do the docs still tell the truth?) -> declare done / commit / push / open PR
+```
+
+It fires once, after the change is verified working and no further edits are planned. It does not fire per-edit mid-work - updating docs before the change settles is wasted effort.
+
+## What it checks
+
+Four surfaces:
+
+| Surface | What drifts |
+|---------|-------------|
+| README | Usage examples, flag / command references, install steps |
+| CLAUDE.md / AGENTS.md | Build / test commands, conventions, architecture pointers |
+| Other in-repo docs | `docs/`, ARCHITECTURE.md, CHANGELOG, API reference |
+| Inline doc comments | Docstrings, XML doc, module headers next to changed code |
+
+Only statements the change made false or incomplete get updated - no style passes, no gratuitous rewrites.
+
+## Most invocations end "no docs affected"
+
+That is the expected outcome for changes that don't touch any externally-described surface. The value is the check, not the edit. The agent states what it checked either way, so there is evidence it looked.
+
+## When NOT to run
+
+- Mid-work, between edits, when more changes are still coming.
+- Changes with no externally-describable surface (comment-only edits, whitespace, internal renames nothing documents).
+- When the smoke test failed - fix the code first.
+
+## Evals
+
+The eval harness lives in `evals/` and follows the escalate-over-shortcut harness lineage. A later phase fills in the full harness; once present, run it as:
+
+```bash
+python evals/run.py ...
+python evals/grade.py ...
+```
+
+## Installation
+
+Installed via the skills-dev `install-skills` script:
+
+```bash
+# from the skills-dev root
+./install-skills.sh -y docs-update      # Linux / macOS
+install-skills.bat -y docs-update       # Windows
+```
+
+The authoritative spec is [`SKILL.md`](SKILL.md).
+
+**Repo:** <https://github.com/mtschoen/skills-docs-update>
