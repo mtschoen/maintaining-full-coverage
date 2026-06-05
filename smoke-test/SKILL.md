@@ -5,6 +5,8 @@ description: "Run a smoke test after making changes, before declaring work compl
 
 # Smoke Test
 
+> **Modes:** Default — run a smoke test on your changes (everything below). `smoke-test --init` — instead, author a `SMOKE.md` for the current project; see [Creating a SMOKE.md](#creating-a-smokemd).
+
 ## The Problem This Solves
 
 The user should never be the first person to discover that a change doesn't work. If they ask you to fix a bug and you say "done", then they try it and get a compile error — that's a failure of process, not just a failure of code. The smoke test catches these before the user ever sees them.
@@ -34,6 +36,14 @@ The only exception is changes that have no runtime effect — like editing comme
 ## How to Smoke Test by Project Type
 
 The right smoke test depends on what you changed and what kind of project it is. Use the most specific approach that applies.
+
+### Check for a project SMOKE.md first
+
+Before falling back to the generic guidance below, look for a `SMOKE.md` in the project root (and in the directory you're working in, for a monorepo). If one exists, **it is authoritative** — the project owner has written down exactly how to smoke test this project: the floor command(s), the bar command(s) that exercise real behavior, any setup (env vars, services to start), and any cleanup (e.g. killing a launched process). Follow it instead of guessing from the project type.
+
+A `SMOKE.md` overrides the project-type defaults below, which are the fallback when none is present. If a `SMOKE.md` exists but is clearly stale (its commands fail because the project moved on), fix the smoke test for the change at hand, then offer to update the `SMOKE.md` — don't silently work around it.
+
+If the project has no `SMOKE.md` and it's one you'll touch again, consider authoring one: see [Creating a SMOKE.md](#creating-a-smokemd) or run `smoke-test --init`.
 
 ### Compiled projects (.NET, C++, Java, Go, Rust)
 
@@ -116,6 +126,49 @@ After you finish the implementation but before you declare completion:
 3. **Run the bar check** (exercise the actual change). If it fails, fix it and retry.
 4. **If you can't fix it after a thorough attempt** (3+ cycles of fix-and-retry, or you've hit something you genuinely don't understand), then report what you tried, what's still broken, and what you think the issue might be. The user should hear "I made the change but the server returns a 500 on the new endpoint — here's the stack trace, I tried X and Y but the issue seems to be Z" — not just "done."
 5. **Report success with evidence.** Don't just say "done" — say what you verified. "Built the solution, ran the CLI with `--export csv`, confirmed the output file has the expected columns." Brief is fine, but concrete.
+
+## Creating a SMOKE.md
+
+When invoked as `smoke-test --init` (or asked to "set up a SMOKE.md" / "advertise this project's smoke test"), **don't run a smoke test — author one instead.** A `SMOKE.md` lets every future agent (and the user) run the right smoke test for this project without re-deriving it, which is what closes the gap between "I should smoke test" and "I ran the project's actual smoke test."
+
+1. **Inspect the project.** Identify the build system and entry points from the project files (`*.csproj`, `package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`), existing run/test scripts, CI config, and any `CLAUDE.md`/`README` notes on building and running. Reuse commands that already exist — don't invent new ones.
+2. **Draft the floor and bar.** The floor is the build/compile/start command. The bar is the command that exercises the changed behavior (run the CLI, hit the endpoint, run the relevant tests). Be concrete and copy-pasteable.
+3. **Capture setup and cleanup.** Note any required env vars, services, or fixtures, and any cleanup the user expects (e.g. "kill the Unity process with `taskkill //IM Unity.exe //F` after launching").
+4. **Write `SMOKE.md` to the project root** using the template below, then show it to the user for confirmation. Keep it short — a smoke test someone will actually run, not a test plan.
+
+### SMOKE.md template
+
+````markdown
+# Smoke Test
+
+How to verify a change works in this project before declaring it done.
+
+## Floor — does it build/run?
+
+```bash
+<build or start command>
+```
+
+## Bar — does it do what was asked?
+
+```bash
+<command(s) that exercise the changed behavior>
+```
+
+Verify: <what the output should show>
+
+## Setup (if any)
+
+<env vars, services to start, fixtures to seed>
+
+## Cleanup (if any)
+
+<processes to kill, temp files to remove>
+
+## Needs manual testing
+
+<things an agent can't verify from the CLI — UI, device behavior, etc.>
+````
 
 ## What "Fix It" Means
 
