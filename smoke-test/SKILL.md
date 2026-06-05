@@ -159,3 +159,7 @@ Sometimes you genuinely can't complete the bar check — maybe you don't have br
 3. Tell the user exactly what to check: "I verified it compiles and the unit tests pass. Please check in the browser that the modal closes after clicking Save — I couldn't test that from the CLI."
 
 The user knowing what to test is far better than the user thinking everything was tested when it wasn't.
+
+## After the Smoke Test Passes
+
+Once the smoke test passes and you have no more changes to make, the change has settled. That is the moment to check whether it made any documentation lie. Use the **docs-update** skill - the sibling step to this one. It checks README, CLAUDE.md / AGENTS.md, other in-repo docs, and inline doc comments for drift your change introduced, and bundles any fixes into the same commit. Most of the time nothing needs updating; the value is the check.
