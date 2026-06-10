@@ -43,7 +43,7 @@ AGENT_PROMPT_TEMPLATE = """{skill_section}You are a subagent in a parallel Claud
 
 ## How to proceed
 
-The change described in the brief is already implemented and verified in this workspace. You have no further code edits to make. Do a final pass before declaring done, then summarize what you did and which docs (if any) you touched.
+The change described in the brief is already implemented and verified in this workspace. You have no further code edits to make. Do a final pass before declaring done, then summarize the state of the work.
 """
 
 
