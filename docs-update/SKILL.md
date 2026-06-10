@@ -1,6 +1,6 @@
 ---
 name: docs-update
-description: "Use after you've finished and verified a change (smoke test passed) and have no further edits planned - before declaring work done, committing, pushing to main, or opening a PR. Checks whether the change made any documentation lie: README, CLAUDE.md / AGENTS.md, other in-repo docs, inline doc comments. Most invocations end 'no docs affected' - that's healthy; the value is the check. Does NOT fire per-edit mid-work."
+description: "Use after you've finished and verified a change (smoke test passed, or smoke-test concluded N/A for a prose-only change) and have no further edits planned - before declaring work done, committing, pushing to main, or opening a PR. Checks whether the change made any documentation lie: README, CLAUDE.md / AGENTS.md, other in-repo docs, inline doc comments. Most invocations end 'no docs affected' - that's healthy; the value is the check. Does NOT fire per-edit mid-work."
 ---
 
 # Docs Update
@@ -16,7 +16,7 @@ Updating docs after *every* edit is wasted effort - the change might get undone 
 docs-update is the step right after smoke-test in the same completion ritual. It is a sibling skill, sequenced second:
 
 ```text
-finish change -> smoke-test (does it work?) -> docs-update (do the docs still tell the truth?) -> declare done / commit / push / open PR
+finish change -> project gates (tests / lint / coverage) -> smoke-test (does it work? may conclude N/A for prose-only changes) -> docs-update (do the docs still tell the truth?) -> declare done / commit / push / open PR
 ```
 
 The guard that keeps this from firing per-edit: run it only once the change is **verified working AND you have no further edits planned**. Before that, any doc you touch might be invalidated again by your next edit. After that, the change is real and the docs either match it or they don't.
