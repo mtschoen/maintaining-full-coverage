@@ -78,7 +78,7 @@ BEFORE claiming completion:
       lint scripts, .clang-tidy, *.sln + .editorconfig (Roslyn),
       .resharper.dotsettings, golangci.yml, .rubocop.yml
    d. Pre-commit / CI config - .pre-commit-config.yaml, .github/workflows,
-      .gitea/workflows, Makefile
+      Makefile
    e. If no coverage command exists, construct one that covers ALL test
       projects in the repo (not just one). If the language has a standard
       linter (ruff, eslint, golangci-lint, clang-tidy, ...) and none is
