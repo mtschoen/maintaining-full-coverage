@@ -14,16 +14,17 @@ example is written in a plaintext-block style:
 
 Markdown renderers (gitea, GitHub, VS Code preview) collapse that: consecutive
 non-blank lines merge into one run-on paragraph, the `═══` line glues to the
-title, and the indentation does not reliably become a code block. The committed
-`TEST-REPORT.md` is meant to be read on the forge during PR review, so it needs
-to render cleanly there, not just in a terminal. The old template's title line
-also used an em-dash (`-` rule violation per the user's global no-em-dash rule).
+title, and the indentation does not reliably become a code block. When a
+repository commits `TEST-REPORT.md`, the report is read on the forge during
+review, so it needs to render cleanly there, not just in a terminal. The old
+template's title line also used an em-dash (`-` rule violation per the user's
+global no-em-dash rule).
 
 User report, verbatim: "the test report template doesn't render very nicely on
 gitea (or anywhere else for that matter). The newlines around the ==== are
 collapsed, and a bunch of others."
 
-## Fix
+## Proposed fix
 
 Rewrite the "Minimal required format" block (and any other plaintext-block
 example in `SKILL.md`) as render-safe markdown, keeping the SAME required fields

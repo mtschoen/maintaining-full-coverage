@@ -29,7 +29,7 @@ TDD is upstream discipline. Verification is evidence. This skill is the metric g
 
 ## Three Modes: what "the bar" means here
 
-The 100%-coverage / 0-findings bar is the destination. Whether *this task* must arrive there depends on where the project starts and what you were asked to do. **Read the project's current state first** - the checked-in `TEST-REPORT.md` (if any) plus a fresh coverage + lint run - then place yourself in one of three modes:
+The 100%-coverage / 0-findings bar is the destination. Whether *this task* must arrive there depends on where the project starts and what you were asked to do. **Read the project's current state first** - the existing `TEST-REPORT.md` (if any) plus a fresh coverage + lint run - then place yourself in one of three modes:
 
 **1. Maintain - the project is already clean.** Coverage is 100% and every configured linter reports 0 findings (the report says so and a fresh run confirms it). The bar is absolute: hold it. Your change must not drop coverage below 100% and must not add a single finding. This is the strict gate - a regression here is blocked, full stop. Everything below about the completion gate and escalation ladder applies at full strength.
 
@@ -38,7 +38,7 @@ The 100%-coverage / 0-findings bar is the destination. Whether *this task* must 
 **3. Best effort - the project is dirty and you're doing something else.** The project is below 100% / has findings, and your task is a feature, bugfix, or refactor - not a coverage/lint cleanup. Demanding the *whole repo* reach 100% before you can finish an unrelated feature is the hardline mistake this mode exists to prevent. The bar here is a **ratchet, not an absolute**:
 
 - **Cover and clean what you touch.** New and changed production code gets tests and is lint-clean. You don't get to add debt just because debt already exists.
-- **Don't regress the baseline.** Coverage percentage must not fall and the finding count must not rise versus the checked-in report. Those numbers are the floor.
+- **Don't regress the baseline.** Coverage percentage must not fall and the finding count must not rise versus the prior report. Those numbers are the floor.
 - **Surface pre-existing debt; don't silently inherit it.** The 1,244 findings you didn't create aren't a blocker for *this* task - but record them in the report as the baseline and flag them (suggest a cleanup task). Don't pretend they're absent, and don't let them quietly grow.
 - The escalation ladder still governs *your own* uncovered lines and findings. Best effort is not a license to skip testing the code you just wrote.
 
@@ -108,8 +108,11 @@ BEFORE claiming completion:
    including the Lint section when any linter is configured. The report
    is a REQUIRED artifact - current git hash, test count, coverage
    numbers, per-tool findings.
-7. COMMIT `TEST-REPORT.md` alongside your other changes.
-8. ONLY after the report is written and committed: done.
+7. APPLY the repository's policy for `TEST-REPORT.md`. Check explicit user
+   instructions for the current task, then AGENTS.md / CLAUDE.md, CI and
+   repository documentation. This skill neither requires nor forbids staging
+   or committing the report.
+8. ONLY after the report is written and the repository policy is applied: done.
 ```
 
 Step 5 is written for Maintain and Close-the-Gap mode. In Best-Effort mode the test is different: *did I cover and clean the code I touched, and did I hold the baseline?* If yes, you're done for this task even though the absolute numbers are off the bar - record the baseline in the report (mode `best-effort`) and surface the remaining gap. Pre-existing findings in Maintain / Close-the-Gap count in full: 1000 inherited ruff warnings enter the Escalation Ladder the same way uncovered branches do.
@@ -178,7 +181,7 @@ Exclusion is correct for genuinely-untestable framework bindings - Android `Medi
 
 ## Report File Convention
 
-Every project maintains a checked-in coverage report at the **repo root** named `TEST-REPORT.md`. If a project already has a report file under a different name, use that. Otherwise, create `TEST-REPORT.md`.
+Every project maintains an up-to-date coverage report at the **repo root** named `TEST-REPORT.md`. If a project already has a report file under a different name, use that. Otherwise, create `TEST-REPORT.md`.
 
 ### Creating or updating the report
 
@@ -188,7 +191,7 @@ After running the gate, **you must** write or overwrite `TEST-REPORT.md` with th
 2. Get the total test count from the test runner output
 3. Get line/branch/method coverage from the coverage tool output
 4. Write `TEST-REPORT.md` at the repo root using the format below
-5. Stage and commit it alongside your other changes
+5. Follow the repository's explicit policy for whether the report is tracked, staged, or committed. If the repository is silent, do not invent a report-specific rule as part of this gate; handle it through the normal commit workflow.
 
 ### Minimal required format
 
@@ -221,12 +224,12 @@ Beyond the minimum, projects add whatever is useful - per-suite breakdowns, bran
 ### Report file rules
 
 - **Lives at repo root as `TEST-REPORT.md`** unless the project already has a report file elsewhere.
-- **Checked into the repo.** Tracked in git history. `git diff` on the report instantly shows regressions.
+- **Git disposition follows repository policy.** This skill requires an up-to-date report but neither requires nor forbids tracking, staging, or committing it. Follow explicit user and repository instructions.
 - **Updated whenever tests or coverage change.** Not "later" - now, as part of the work.
 - **Git hash above coverage results.** It establishes what code the numbers describe.
 - **AGENTS.md (or CLAUDE.md) documents the coverage command** and references `TEST-REPORT.md`.
 - **With CI:** PRs that regress coverage are rejected unless an exemption grants a new baseline.
-- **Without CI:** Honor system, but git history still catches regressions.
+- **Without CI:** The local report records the latest evidence for manual comparison.
 
 ## Heroic Coverage Scenarios
 
@@ -251,7 +254,8 @@ If you think a line is untestable, you are probably wrong. Mock harder, simulate
 | "This is just config/glue code" | Config can break. Glue can fail. Test it. |
 | "The framework makes this untestable" | Ask the human. They may know a trick, or the code should be restructured. |
 | "Adding `pragma: no cover` is faster / asking takes longer" | Exclusions require human approval. If you can fix it, fix it. If you can't, ask - don't reach for pragma instead of asking. |
-| "I'll update the report file after" | The report is a first-class artifact. Update it now, commit it with your changes. |
+| "I'll update the report file after" | The report is a required artifact. Update it now; its Git disposition is a separate repository-policy decision. |
+| "The report must always be committed" / "The report must never be committed" | Neither rule comes from this skill. Follow explicit user and repository policy for tracking, staging, and commits. |
 | "Both branches do the same thing, testing one is enough" | The coverage tool disagrees. Test both. |
 | "The C++/JS/other-language code is a separate concern" / "I got 100% on the main language" | 100% of ONE language is not 100%. Every language in the repo needs its own coverage and lint tooling. |
 | "It's just a lint warning / a false positive" | Often the linter found something you missed - investigate before suppressing. Real false positives get restructured around or per-case suppressed with approval, never mass-suppressed. |
@@ -266,6 +270,7 @@ If you think a line is untestable, you are probably wrong. Mock harder, simulate
 - Assuming code is unreachable without verifying (it might be dead - delete it)
 - Batching all test-writing to the end
 - Treating `TEST-REPORT.md` as optional, or claiming completion without updating it
+- Inventing or overriding a `TEST-REPORT.md` commit policy instead of following explicit user and repository instructions
 - Skipping straight to step 4 or 5 of the escalation ladder
 - Writing tests that cover the line but don't test meaningful behavior
 - Forgetting to test both branches of a conditional
