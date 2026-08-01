@@ -38,3 +38,38 @@ A separate baseline included the user's direct instruction not to commit the
 report. The fresh agent honored that instruction over the previous skill. This
 confirmed instruction precedence, but not the skill's default behavior, so the
 no-override RED scenario above was required to expose the policy defect.
+
+## Review correction: neutral policy
+
+The first revision removed the commit requirement by making the opposite rule
+unconditional. Four of five fresh agents then excluded `TEST-REPORT.md` despite
+explicit main, release, or CI policies requiring it in the commit. One followed
+the repository rule, showing that the conflicting guidance also caused
+inconsistent behavior.
+
+Verdict: FAIL. Required generation had become required non-commitment.
+
+The neutral revision separates two decisions:
+
+1. Generate or update `TEST-REPORT.md` before completion.
+2. Follow explicit current-task user instructions, then repository policy, for
+   whether the report is tracked and whether the current update is staged or
+   committed.
+
+Five scenarios tested policies requiring the report in the commit, and five
+tested policies requiring it left uncommitted. Across three agent contexts, all
+ten scenarios followed the explicit policy while keeping report generation
+required.
+
+Additional cases verified the distinctions the main scenarios did not cover:
+
+- A current-task user instruction to commit the report overrode a repository's
+  usual no-commit feature-branch policy. The absent report was generated,
+  tracked, staged, and committed.
+- An absent report was generated but left untracked, unstaged, and uncommitted
+  when repository policy required that PR behavior.
+- An already tracked report stayed tracked while its current modification was
+  left unstaged and uncommitted, without untracking the file.
+
+Verdict: PASS. Generation is mandatory; Git disposition is neutral and follows
+explicit current-task user and repository policy.

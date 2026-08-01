@@ -1,15 +1,9 @@
 # Handoff: make the TEST-REPORT.md template render-safe markdown
 
 **Raised:** 2026-06-02 (during schoen-claude-status PR #9).
-**Status:** superseded by the local-only report policy.
+**Status:** open / future work. Not yet applied to this skill.
 
-## Resolution
-
-`TEST-REPORT.md` remains required verification evidence, but it must stay in
-the working tree and must not be staged or committed. It is no longer reviewed
-through a forge, so this rendering-only handoff should not be implemented.
-
-## Historical problem
+## Problem
 
 The skill's `SKILL.md` "Report File Convention" -> "Minimal required format"
 example is written in a plaintext-block style:
@@ -20,16 +14,17 @@ example is written in a plaintext-block style:
 
 Markdown renderers (gitea, GitHub, VS Code preview) collapse that: consecutive
 non-blank lines merge into one run-on paragraph, the `═══` line glues to the
-title, and the indentation does not reliably become a code block. The committed
-`TEST-REPORT.md` is meant to be read on the forge during PR review, so it needs
-to render cleanly there, not just in a terminal. The old template's title line
-also used an em-dash (`-` rule violation per the user's global no-em-dash rule).
+title, and the indentation does not reliably become a code block. When a
+repository commits `TEST-REPORT.md`, the report is read on the forge during
+review, so it needs to render cleanly there, not just in a terminal. The old
+template's title line also used an em-dash (`-` rule violation per the user's
+global no-em-dash rule).
 
 User report, verbatim: "the test report template doesn't render very nicely on
 gitea (or anywhere else for that matter). The newlines around the ==== are
 collapsed, and a bunch of others."
 
-## Historical proposal
+## Proposed fix
 
 Rewrite the "Minimal required format" block (and any other plaintext-block
 example in `SKILL.md`) as render-safe markdown, keeping the SAME required fields
@@ -57,7 +52,7 @@ gitea. Use it as the template to backport into `SKILL.md`:
 It uses headers + tables + a bash code fence and carries all the required
 fields, so it doubles as the new minimal-format example.
 
-## Historical scope note
+## Scope note
 
 This is a docs/template change to `SKILL.md` only - no behavioral change to the
 coverage/lint gate logic. After editing, re-run `install-skills.sh` (or the

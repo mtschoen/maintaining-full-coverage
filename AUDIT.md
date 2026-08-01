@@ -7,8 +7,8 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 - [x] Completion gate — each of the 5 steps
 - [x] Escalation ladder — each of the 5 tiers, plus the "never skip" constraint
 - [x] Restructure over exclude — restructure production code before reaching for exclusions or analyzer suppressions
-- [x] Report file - treated as a required local artifact, updated now not later
-- [x] Report file - left unstaged and uncommitted while other changes are committed
+- [x] Report file - treated as a required artifact, updated now not later
+- [x] Report file - Git disposition follows explicit current-task user instructions and repository policy, covering tracked, untracked, committed, and uncommitted reports
 - [x] Report file — CI rejection of regressions, exemption/baseline process
 - [x] Report file — git hash placement, minimal format fields (verified via sample report generation)
 - [x] Development nudge — don't batch tests, branch awareness
@@ -56,7 +56,7 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 | 16: Multi-Language Lint + Report | All-languages lint verification, report Lint block per-tool listing |
 | 17: Best-Effort on a Dirty Project | Best-effort mode, ratchet (cover-what-you-touch, hold baseline, surface debt) |
 | 18: Ambiguous Mode | Mode ambiguity → ask, then apply correct bar; Mode line in report |
-| 19: Report Commit Policy | Required generation, explicit exclusion from staging and commits |
+| 19: Report Commit Policy | Required generation, neutral Git handling based on explicit user and repository policy |
 
 ## Coverage: 29/29 sections covered
 
@@ -65,6 +65,6 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
   (hardline) vs new skill (mode-aware) on scenarios 14/17/18. Best-effort no
   longer blocks unrelated work on inherited debt; ratchet and maintain-mode
   strictness preserved.
-- Local report commit policy evaluated 2026-08-01 (see
+- Report commit policy evaluated 2026-08-01 (see
   `maintaining-full-coverage-report-commit-policy.md`): report generation stays
-  required while staging and committing the report are prohibited.
+  required while explicit user and repository policy determines its Git disposition.
