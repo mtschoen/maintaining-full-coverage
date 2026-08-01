@@ -1,9 +1,15 @@
 # Handoff: make the TEST-REPORT.md template render-safe markdown
 
 **Raised:** 2026-06-02 (during schoen-claude-status PR #9).
-**Status:** open / future work. Not yet applied to this skill.
+**Status:** superseded by the local-only report policy.
 
-## Problem
+## Resolution
+
+`TEST-REPORT.md` remains required verification evidence, but it must stay in
+the working tree and must not be staged or committed. It is no longer reviewed
+through a forge, so this rendering-only handoff should not be implemented.
+
+## Historical problem
 
 The skill's `SKILL.md` "Report File Convention" -> "Minimal required format"
 example is written in a plaintext-block style:
@@ -23,7 +29,7 @@ User report, verbatim: "the test report template doesn't render very nicely on
 gitea (or anywhere else for that matter). The newlines around the ==== are
 collapsed, and a bunch of others."
 
-## Fix
+## Historical proposal
 
 Rewrite the "Minimal required format" block (and any other plaintext-block
 example in `SKILL.md`) as render-safe markdown, keeping the SAME required fields
@@ -51,7 +57,7 @@ gitea. Use it as the template to backport into `SKILL.md`:
 It uses headers + tables + a bash code fence and carries all the required
 fields, so it doubles as the new minimal-format example.
 
-## Scope note
+## Historical scope note
 
 This is a docs/template change to `SKILL.md` only - no behavioral change to the
 coverage/lint gate logic. After editing, re-run `install-skills.sh` (or the

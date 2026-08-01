@@ -1,13 +1,13 @@
 # maintaining-full-coverage
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that gates task completion on 100% test coverage, with a checked-in report file for regression tracking.
+A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that gates task completion on 100% test coverage, with a generated local report file for verification evidence.
 
 ## What it does
 
 When loaded, this skill enforces three things:
 
 1. **Coverage must be 100% before you claim done.** No rounding, no "close enough."
-2. **A checked-in report file** tracks coverage over time. `git diff TEST-REPORT.md` catches regressions instantly.
+2. **A generated local report file** records current verification evidence without being staged or committed.
 3. **A strict escalation ladder** when coverage drops: write tests, heroic testing, ask the human, framework exclusions (with approval), documented exceptions (last resort).
 
 The skill layers on top of `test-driven-development` (write tests first) and `verification-before-completion` (prove tests pass). This skill closes the loop on the metric.
@@ -25,7 +25,7 @@ The skill will appear in your `/skills` list and trigger automatically when comp
 
 ## Report file format
 
-The skill expects projects to maintain a checked-in coverage report. Minimal format:
+The skill expects projects to maintain a generated local coverage report. Generate or update it for each gate run, but do not stage or commit it. Minimal format:
 
 ```text
 myproject test report — 2026-04-04T12:00:00-07:00
