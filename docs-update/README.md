@@ -48,7 +48,7 @@ First live comparison (2026-06-10, n=3): with_skill 12/12 vs baseline 4/12 (8 do
 
 ## Related skills
 
-Part of the completion suite - maintaining-full-coverage, smoke-test, docs-update, escalate-over-shortcut, and wrap are designed to be installed together and reference each other directly. Each still works standalone; treat cross-references to missing suite members as optional.
+This skill is part of the completion suite: `maintaining-full-coverage`, `smoke-test`, `docs-update`, `escalate-over-shortcut`, and `wrap`. Suite skills install separately (each lives in its own repo) but are designed to be installed together, and they reference each other directly. Each works standalone; treat cross-references to missing suite members as optional.
 
 ## Installation
 
