@@ -46,6 +46,10 @@ python evals/grade.py --responses-dir workspace/r1 --evals evals/evals.json --ll
 
 First live comparison (2026-06-10, n=3): with_skill 12/12 vs baseline 4/12 (8 docs_stale); control 3/3 no_op in both configs. **Prompt design rule:** the agent prompt must not name the graded dimension - the wrapper used to end "summarize what you did and which docs (if any) you touched", which leaked "docs" to the baseline; it now ends "summarize the state of the work". Keep briefs and wrapper neutral so the harness measures the skill, not instruction-following.
 
+## Related skills
+
+Part of the completion suite - maintaining-full-coverage, smoke-test, docs-update, escalate-over-shortcut, and wrap are designed to be installed together and reference each other directly. Each still works standalone; treat cross-references to missing suite members as optional.
+
 ## Installation
 
 Installed via the skills-dev `install-skills` script:
