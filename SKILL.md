@@ -221,6 +221,23 @@ The **Mode** line records which of the Three Modes governed this run, so a futur
 
 Beyond the minimum, projects add whatever is useful - per-suite breakdowns, branch coverage, UI audit stats, timing.
 
+### One snapshot, not a journal
+
+`TEST-REPORT.md` holds exactly one report: the latest. Overwrite the entire
+file on every pass - never append a new section on top of the last one, and
+never leave a prior pass's write in place alongside the current one.
+
+Facts only: git ref, pass/fail/skip counts, coverage numbers, one line per
+lint tool, and the exact commands run. No editorial narration - no mode
+description, no docs-drift audit, no smoke-test walkthrough, no "Concerns"
+section, no machine-workaround explanation. That evidence belongs in the PR
+body and the commit message, not a file a future session reads as current
+state.
+
+Machine-specific gotchas discovered while testing (a flaky path on one host,
+a workaround needed only on Windows) go to the agent's memory corpus, not
+the report.
+
 ### Report file rules
 
 - **Lives at repo root as `TEST-REPORT.md`** unless the project already has a report file elsewhere.
