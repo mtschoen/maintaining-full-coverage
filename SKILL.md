@@ -227,7 +227,8 @@ Beyond the minimum, projects add whatever is useful - per-suite breakdowns, bran
 file on every pass - never append a new section on top of the last one, and
 never leave a prior pass's write in place alongside the current one.
 
-Facts only: git ref, pass/fail/skip counts, coverage numbers, one line per
+Facts only: git ref, status and test counts (a pass/fail/skip breakdown
+when available), coverage numbers, one line per
 lint tool, and the exact commands run. No editorial narration - no mode
 description, no docs-drift audit, no smoke-test walkthrough, no "Concerns"
 section, no machine-workaround explanation. That evidence belongs in the PR
@@ -235,8 +236,8 @@ body and the commit message, not a file a future session reads as current
 state.
 
 Machine-specific gotchas discovered while testing (a flaky path on one host,
-a workaround needed only on Windows) go to the agent's memory corpus, not
-the report.
+a workaround needed only on Windows) go to the agent's persistent
+memory or notes system, if the environment has one - not the report.
 
 ### Report file rules
 
