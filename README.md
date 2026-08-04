@@ -1,14 +1,14 @@
 # maintaining-full-coverage
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that gates task completion on test coverage and lint cleanliness, with a report file for verification evidence.
+An agent skill that gates task completion on test coverage and lint cleanliness, with a report file for verification evidence. Written for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) as one example install target, but not specific to it - any agent or model can use this skill.
 
-Part of the completion suite - maintaining-full-coverage, smoke-test, docs-update, escalate-over-shortcut, and wrap are designed to be installed together and reference each other directly. Each still works standalone; treat cross-references to missing suite members as optional.
+This skill is part of the completion suite: `maintaining-full-coverage`, `smoke-test`, `docs-update`, `escalate-over-shortcut`, and `wrap`. Suite skills install separately (each lives in its own repo) but are designed to be installed together, and they reference each other directly. Each works standalone; treat cross-references to missing suite members as optional.
 
 ## What it does
 
 When loaded, this skill enforces a completion gate on production code:
 
-1. **A Coverage Gate and a Lint Gate, run together.** Every line of production code must be exercised by a test AND clean against every linter/analyzer the project has configured. No rounding, no "close enough," no checking only one of the two.
+1. **A Coverage Gate and a Lint Gate, run together.** Every line of production code must be exercised by a test AND be clean against every linter/analyzer the project has configured. No rounding, no "close enough," no checking only one of the two.
 2. **Three Modes calibrate what "done" means**, since not every project starts at 100% / 0 findings:
    - **Maintain** - the project is already clean; hold the bar, no regressions allowed.
    - **Close the gap** - reaching 100% coverage and 0 findings IS the task; the same strict bar applies to every uncovered line and every finding.
@@ -49,7 +49,7 @@ Lint:     eslint: 0 findings (0 errors, 0 warnings)
           0 documented exceptions
 ```
 
-Projects declare the command that generates this file and its location in their `CLAUDE.md`.
+Projects declare the command that generates this file and its location in their `AGENTS.md`.
 
 ## The escalation ladder
 
