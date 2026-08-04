@@ -155,7 +155,7 @@ The `while (isActive)` form has a false branch the tool can't reach (cancellatio
 
 A warning you're tempted to silence often points at a real structural problem; restructuring to satisfy it can surface a genuine bug instead of hiding one. Never mass-suppress a category as "technically false positives" - demand a per-case justification for the rare real one.
 
-In git-wizard (C#), a JetBrains `AccessToDisposedClosure` inspection flagged 18 sites. Bulk suppression was tempting; the structural fix was better. On the dominant pattern, moving the `using` inside the lambda makes test lifetime explicit in code instead of asserted in a comment:
+In [git-wizard](https://github.com/mtschoen/git-wizard) (C#), a JetBrains `AccessToDisposedClosure` inspection flagged 18 sites. Bulk suppression was tempting; the structural fix was better. On the dominant pattern, moving the `using` inside the lambda makes test lifetime explicit in code instead of asserted in a comment:
 
 ```csharp
 // Before - analyzer flags the disposable captured by the lambda
@@ -220,6 +220,8 @@ The **Mode** line records which of the Three Modes governed this run, so a futur
 - **best-effort:** `PASS` when your changed code is covered and lint-clean AND the baseline did not regress (coverage % didn't drop, finding count didn't rise). Record the inherited baseline (e.g. `Coverage: 312/400 (78%) - baseline held`, `Lint: eslint 1244 findings (pre-existing baseline, +0 this change)`) so the ratchet is auditable. A best-effort `PASS` is honest about not being at the absolute bar; it is not a `FAIL`.
 
 Beyond the minimum, projects add whatever is useful - per-suite breakdowns, branch coverage, UI audit stats, timing.
+
+The report records verification evidence ONLY - status, mode, counts, coverage, lint findings, exclusions. It is not a place for implementation narrative: no description of what was changed, no code snippets, no changelog-style prose. That belongs in the commit message and the PR body; the report is evidence a gate ran, not a description of the work that ran it.
 
 ### One snapshot, not a journal
 
