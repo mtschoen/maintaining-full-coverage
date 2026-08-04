@@ -19,7 +19,7 @@ If the coverage report doesn't say 100% - or the linter has findings - you're no
 
 **Violating the letter of this rule is violating the spirit of this rule.**
 
-This skill is the final layer in a three-skill stack:
+This skill is the last of a three-skill testing-discipline lineage:
 
 1. `test-driven-development` - writes tests before code
 2. `verification-before-completion` - proves tests pass with evidence
@@ -127,7 +127,7 @@ When the gate fails (coverage <100% or any lint finding), follow this order. **N
 
 **Step 3 - Ask the human.** If you genuinely cannot cover a line or clear a finding, ask. Do not guess. Likely outcomes: the code is unreachable/dead -> **delete it** (dead code is a bug, not an exception); or the human knows a testing trick -> apply it.
 
-**Step 4 - Framework exclusions / per-case suppressions.** `# pragma: no cover`, `/* istanbul ignore */`, `# noqa`, `[SuppressMessage]`, `NOLINT`. **Only with explicit human approval.** These produce a synthetic clean report. Never apply them silently, never mass-suppress a category.
+**Step 4 - Framework exclusions / per-case suppressions.** `# pragma: no cover`, `/* istanbul ignore */`, `# noqa`, `[SuppressMessage]`, `NOLINT`. **Only with explicit human approval.** These produce a synthetic clean report. Never apply them silently, never mass-suppress a category. This is `escalate-over-shortcut` territory: a suppression added without that approval is exactly the kind of shortcut it exists to catch - escalate to the human instead of applying it unilaterally.
 
 **Step 5 - Documented exceptions.** Absolute last resort. The report file explicitly lists what's uncovered or unfixed and why. This becomes the new baseline that other work must meet.
 
