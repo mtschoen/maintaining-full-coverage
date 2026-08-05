@@ -24,23 +24,33 @@ Copy `SKILL.md` to `~/.agents/skills/maintaining-full-coverage/` (or wherever yo
 
 ## Report file format
 
-The skill expects projects to maintain an up-to-date coverage and lint report. Generate or update it for each gate run, then follow explicit current-task user instructions and repository policy for tracking, staging, and commits. The report records verification evidence only - status, mode, counts, coverage, lint findings, exclusions - never a narrative of what was implemented. Minimal format:
+The skill expects projects to maintain an up-to-date coverage and lint report. Generate or update it for each gate run, then follow explicit current-task user instructions and repository policy for tracking, staging, and commits. The report records verification evidence only - status, mode, counts, coverage, lint findings, exclusions - never a narrative of what was implemented.
 
-```text
-myproject test report - 2026-04-04T12:00:00-07:00
-===================================================
+The report is committed markdown and gets read on the forge during review, so the format is render-safe markdown - headers and tables, not a terminal-aligned plaintext block. Minimal format:
 
-Status:   PASS
-Mode:     maintain
-Tests:    365 total
-Git:      a4f2c91 (add-webhook-support)
-Coverage: 1203/1203 statements (100%)
-          0 lines uncovered
-          1 exclusion annotation
-Lint:     eslint: 0 findings (0 errors, 0 warnings)
-          0 per-case suppressions
-          0 documented exceptions
+````markdown
+# myproject - Test Report
+
+`2026-04-04T12:00:00-07:00`
+
+| Field | Value |
+|-------|-------|
+| **Status** | PASS |
+| **Mode** | maintain |
+| **Tests** | 365 total (365 passed, 0 failed, 0 skipped) |
+| **Git** | `a4f2c91` (`add-webhook-support`) |
+| **Coverage** | 1203/1203 statements (100%), 0 uncovered, 1 exclusion annotation |
+| **Lint** | eslint: 0 findings (0 errors, 0 warnings); 0 per-case suppressions, 0 documented exceptions |
+
+## Commands
+
+```bash
+npm run test -- --coverage
+npx eslint .
 ```
+````
+
+Multi-tool or multi-module projects promote the Lint and Coverage breakdowns to their own tables under `##` headers; `SKILL.md` carries those variants.
 
 Projects declare the command that generates this file and its location in their `AGENTS.md`.
 

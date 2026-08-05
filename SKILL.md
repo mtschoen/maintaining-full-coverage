@@ -195,29 +195,58 @@ After running the gate, **you must** write or overwrite `TEST-REPORT.md` with th
 
 ### Minimal required format
 
-```text
-<project> test report - <ISO 8601 timestamp>
-===========================================
+The report is committed markdown and gets read on the forge (gitea, GitHub) during review, so it must **render** there, not just look aligned in a terminal. Write it as real markdown: headers, tables, fenced commands, a blank line between every block. No box-drawing rules (`===`, `___`, U+2550), no em-dashes, no bare indented field lists - renderers collapse consecutive non-blank lines into one run-on paragraph and glue an underline rule to the title above it.
 
-Status:   PASS | FAIL
-Mode:     maintain | close-the-gap | best-effort
-Tests:    <total> total
-Git:      <short hash> (<branch or commit message>)
-Coverage: <covered>/<total> statements (<pct>%)
-          <N> lines uncovered
-          <N> exclusion annotations
-Lint:     <tool>: <N> findings (<N> errors, <N> warnings)
-          [one line per configured tool]
-          <N> per-case suppressions
-          <N> documented exceptions
+Copy this skeleton, keeping every field:
+
+````markdown
+# <project> - Test Report
+
+`<ISO 8601 timestamp>`
+
+| Field | Value |
+|-------|-------|
+| **Status** | PASS \| FAIL |
+| **Mode** | maintain \| close-the-gap \| best-effort |
+| **Tests** | `<total>` total (`<passed>` passed, `<failed>` failed, `<skipped>` skipped) |
+| **Git** | `<short hash>` (`<branch or commit message>`) |
+| **Coverage** | `<covered>/<total>` statements (`<pct>%`), `<N>` uncovered, `<N>` exclusion annotations |
+| **Lint** | `<tool>`: `<N>` findings (`<N>` errors, `<N>` warnings); `<N>` per-case suppressions, `<N>` documented exceptions |
+
+## Commands
+
+```bash
+<the exact coverage command that was run>
+<the exact lint command that was run, one line per tool>
 ```
+````
 
-The **Lint** block is required when the project has any linter or analyzer configured. List every configured tool - `ruff`, `mypy`, `eslint`, `clang-tidy`, `inspectcode`/`jbinspect`, `golangci-lint`, Roslyn analyzers, etc.
+Note the escaped pipes: a literal `|` inside a table cell has to be written `\|` or it splits the cell. That bites on `PASS | FAIL`, on shell pipelines, and on a CI note like `... \|\| true`.
 
-The **Mode** line records which of the Three Modes governed this run, so a future reader knows whether a number is a ceiling to hold or a floor to ratchet up from. `Status` is defined relative to that mode:
+The **Lint** row is required when the project has any linter or analyzer configured. Name every configured tool - `ruff`, `mypy`, `eslint`, `clang-tidy`, `inspectcode`/`jbinspect`, `golangci-lint`, Roslyn analyzers, etc.
+
+When more than one tool or module is in play, the single-row summary stops being readable. Promote the breakdown to its own table under a `##` header and keep the summary row as a total:
+
+````markdown
+## Lint
+
+| Tool | Findings | Errors | Warnings |
+|------|----------|--------|----------|
+| ruff | 0 | 0 | 0 |
+| eslint | 3 | 0 | 3 |
+
+## Coverage
+
+| Module | Statements | Covered | Percent |
+|--------|------------|---------|---------|
+| api | 812 | 812 | 100% |
+| web | 391 | 372 | 95% |
+````
+
+The **Mode** row records which of the Three Modes governed this run, so a future reader knows whether a number is a ceiling to hold or a floor to ratchet up from. `Status` is defined relative to that mode:
 
 - **maintain / close-the-gap:** `PASS` only when coverage is 100% AND every tool reports 0 findings (per-case suppressions and documented exceptions count as cleared, same as `pragma: no cover` does for coverage).
-- **best-effort:** `PASS` when your changed code is covered and lint-clean AND the baseline did not regress (coverage % didn't drop, finding count didn't rise). Record the inherited baseline (e.g. `Coverage: 312/400 (78%) - baseline held`, `Lint: eslint 1244 findings (pre-existing baseline, +0 this change)`) so the ratchet is auditable. A best-effort `PASS` is honest about not being at the absolute bar; it is not a `FAIL`.
+- **best-effort:** `PASS` when your changed code is covered and lint-clean AND the baseline did not regress (coverage % didn't drop, finding count didn't rise). Record the inherited baseline in the same rows - `| **Coverage** | 312/400 statements (78%), baseline held |`, `| **Lint** | eslint: 1244 findings (pre-existing baseline, +0 this change) |` - so the ratchet is auditable. A best-effort `PASS` is honest about not being at the absolute bar; it is not a `FAIL`.
 
 Beyond the minimum, projects add whatever is useful - per-suite breakdowns, branch coverage, UI audit stats, timing.
 
@@ -231,7 +260,7 @@ never leave a prior pass's write in place alongside the current one.
 
 Facts only: git ref, status and test counts (a pass/fail/skip breakdown
 when available), coverage numbers, one line per
-lint tool, and the exact commands run. No editorial narration - no mode
+lint tool, and the exact commands run (the `## Commands` fence). No editorial narration - no mode
 description, no docs-drift audit, no smoke-test walkthrough, no "Concerns"
 section, no machine-workaround explanation. That evidence belongs in the PR
 body and the commit message, not a file a future session reads as current
@@ -244,6 +273,7 @@ memory or notes system, if the environment has one - not the report.
 ### Report file rules
 
 - **Lives at repo root as `TEST-REPORT.md`** unless the project already has a report file elsewhere.
+- **Renders as markdown, not as terminal output.** Headers and tables, blank line between blocks, ASCII only, pipes escaped inside cells. Check it in a markdown preview before you call it written - if it renders as one run-on paragraph, it is not done.
 - **Git disposition follows repository policy.** This skill requires an up-to-date report but neither requires nor forbids tracking, staging, or committing it. Follow explicit user and repository instructions.
 - **Updated whenever tests or coverage change.** Not "later" - now, as part of the work.
 - **Git hash above coverage results.** It establishes what code the numbers describe.
