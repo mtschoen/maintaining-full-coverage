@@ -56,4 +56,5 @@ fields, so it doubles as the new minimal-format example.
 
 This is a docs/template change to `SKILL.md` only - no behavioral change to the
 coverage/lint gate logic. After editing, re-run `install-skills.sh` (or the
-project's deploy step) so the deployed copy under `~/.claude/skills/` matches.
+project's deploy step) so the deployed copy under your skills directory (e.g.
+`~/.claude/skills/` for Claude Code) matches.

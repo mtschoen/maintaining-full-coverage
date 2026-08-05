@@ -1,6 +1,6 @@
 # maintaining-full-coverage
 
-An agent skill that gates task completion on test coverage and lint cleanliness, with a report file for verification evidence. Written for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) as one example install target, but not specific to it - any agent or model can use this skill.
+An agent skill that gates task completion on test coverage and lint cleanliness, with a report file for verification evidence.
 
 This skill is part of the completion suite: `maintaining-full-coverage`, `smoke-test`, `docs-update`, `escalate-over-shortcut`, and `wrap`. Suite skills install separately (each lives in its own repo) but are designed to be installed together, and they reference each other directly. Each works standalone; treat cross-references to missing suite members as optional.
 
@@ -20,14 +20,14 @@ The skill layers on top of `test-driven-development` (write tests first) and `ve
 
 ## Install
 
-Copy `SKILL.md` to your Claude Code skills directory:
+Copy `SKILL.md` to `~/.agents/skills/maintaining-full-coverage/` (or wherever your agent harness reads skills - e.g. `~/.claude/skills/` for Claude Code):
 
 ```bash
-mkdir -p ~/.claude/skills/maintaining-full-coverage
-cp SKILL.md ~/.claude/skills/maintaining-full-coverage/SKILL.md
+mkdir -p ~/.agents/skills/maintaining-full-coverage
+cp SKILL.md ~/.agents/skills/maintaining-full-coverage/SKILL.md
 ```
 
-The skill will appear in your `/skills` list and trigger automatically when completing work in projects that track coverage.
+The skill will be picked up automatically by any harness that scans that location (in Claude Code it appears in the `/skills` list) and trigger when completing work in projects that track coverage.
 
 ## Report file format
 
