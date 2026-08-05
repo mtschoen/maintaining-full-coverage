@@ -7,7 +7,7 @@ description: "Use after you've finished and verified a change (smoke test passed
 
 ## The Problem This Solves
 
-Code changes silently invalidate the prose that describes them. A renamed flag, a moved command, a changed default, a deleted helper - and now the README, the CLAUDE.md build instructions, or a docstring is quietly lying. The next reader (often a future agent session) trusts the stale doc and wastes time, or worse, acts on it.
+Code changes silently invalidate the prose that describes them. A renamed flag, a moved command, a changed default, a deleted helper - and now the README, the AGENTS.md/CLAUDE.md build instructions, or a docstring is quietly lying. The next reader (often a future agent session) trusts the stale doc and wastes time, or worse, acts on it.
 
 Updating docs after *every* edit is wasted effort - the change might get undone or redone differently. So there is no natural per-edit moment, and docs rot. The fix is to anchor the check to one specific moment: after the change has settled.
 
@@ -38,7 +38,7 @@ Run once, after smoke-test passes and before you declare done / commit / push to
 3. **Update only what drifted.** Minimal, justified edits that bring the doc back in line with reality - not a gratuitous rewrite, not a style pass, not new documentation the change didn't call for.
 4. **Bundle the doc edits into the same commit / PR as the code** so a reviewer sees the behavior change and the doc change side by side.
 5. **If unsure whether a doc statement is load-bearing** (would removing or changing it mislead someone?), surface it to the user rather than silently editing or silently skipping.
-6. **State the docs impact when you report completion** - even "no docs affected, checked README + CLAUDE.md." Brief is fine. This is the docs analogue of smoke-test's "report what you verified."
+6. **State the docs impact when you report completion** - even "no docs affected, checked README + AGENTS.md." Brief is fine. This is the docs analogue of smoke-test's "report what you verified."
 
 ## Surfaces To Check
 
@@ -54,7 +54,7 @@ Run once, after smoke-test passes and before you declare done / commit / push to
 When you finish, say what you checked and what you changed - concretely, briefly:
 
 - "Updated README usage example for the renamed `--out` flag and the docstring on `export()`. No other docs affected."
-- "No docs affected - checked README and CLAUDE.md, neither references the internal cache layer I changed."
+- "No docs affected - checked README and AGENTS.md, neither references the internal cache layer I changed."
 
 A bare "done" hides whether you even looked. The one-line docs-impact note is the evidence that you did.
 
