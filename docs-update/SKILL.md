@@ -1,13 +1,13 @@
 ---
 name: docs-update
-description: "Use after you've finished and verified a change (smoke test passed, or smoke-test concluded N/A for a prose-only change) and have no further edits planned - before declaring work done, committing, pushing to main, or opening a PR. Checks whether the change made any documentation lie: README, CLAUDE.md / AGENTS.md, other in-repo docs, inline doc comments. Most invocations end 'no docs affected' - that's healthy; the value is the check. Does NOT fire per-edit mid-work."
+description: "Use after you've finished and verified a change (smoke test passed, or smoke-test concluded N/A for a prose-only change) and have no further edits planned - before declaring work done, committing, pushing to main, or opening a PR. Checks whether the change made any documentation lie: README, AGENTS.md, other in-repo docs, inline doc comments. Most invocations end 'no docs affected' - that's healthy; the value is the check. Does NOT fire per-edit mid-work."
 ---
 
 # Docs Update
 
 ## The Problem This Solves
 
-Code changes silently invalidate the prose that describes them. A renamed flag, a moved command, a changed default, a deleted helper - and now the README, the AGENTS.md/CLAUDE.md build instructions, or a docstring is quietly lying. The next reader (often a future agent session) trusts the stale doc and wastes time, or worse, acts on it.
+Code changes silently invalidate the prose that describes them. A renamed flag, a moved command, a changed default, a deleted helper - and now the README, the AGENTS.md build instructions, or a docstring is quietly lying. The next reader (often a future agent session) trusts the stale doc and wastes time, or worse, acts on it.
 
 Updating docs after *every* edit is wasted effort - the change might get undone or redone differently. So there is no natural per-edit moment, and docs rot. The fix is to anchor the check to one specific moment: after the change has settled.
 
@@ -45,7 +45,7 @@ Run once, after smoke-test passes and before you declare done / commit / push to
 | Surface | What drifts | Why it matters |
 |---------|-------------|----------------|
 | README | Usage, examples, flag / command references, feature list, install steps | First thing a human reads; wrong examples waste real time |
-| CLAUDE.md / AGENTS.md | Build / test commands, conventions, architecture pointers | A future agent session trusts these as ground truth; drift here actively misleads |
+| AGENTS.md | Build / test commands, conventions, architecture pointers | A future agent session trusts these as ground truth; drift here actively misleads |
 | Other in-repo docs | ARCHITECTURE.md, `docs/`, CHANGELOG, API reference | Longer-form descriptions of behavior the change may have altered |
 | Inline doc comments | Docstrings, XML doc, module headers next to the changed code | The most local docs; easiest to leave stale after a refactor |
 

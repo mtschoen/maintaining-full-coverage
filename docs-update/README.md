@@ -1,6 +1,6 @@
 # docs-update
 
-An agent skill that checks whether a finished, verified change made any documentation lie - README, CLAUDE.md / AGENTS.md, other in-repo docs, inline doc comments - before the agent declares work done or opens a PR.
+An agent skill that checks whether a finished, verified change made any documentation lie - README, AGENTS.md, other in-repo docs, inline doc comments - before the agent declares work done or opens a PR.
 
 ## Where it fits
 
@@ -19,7 +19,7 @@ Four surfaces:
 | Surface | What drifts |
 |---------|-------------|
 | README | Usage examples, flag / command references, install steps |
-| CLAUDE.md / AGENTS.md | Build / test commands, conventions, architecture pointers |
+| AGENTS.md | Build / test commands, conventions, architecture pointers |
 | Other in-repo docs | `docs/`, ARCHITECTURE.md, CHANGELOG, API reference |
 | Inline doc comments | Docstrings, XML doc, module headers next to changed code |
 
