@@ -1,6 +1,6 @@
 # docs-update
 
-An agent skill that checks whether a finished, verified change made any documentation lie - README, AGENTS.md, other in-repo docs, inline doc comments - before the agent declares work done or opens a PR.
+A skill that checks whether a finished, verified change made any documentation lie - README, AGENTS.md, other in-repo docs, inline doc comments - before the agent declares work done or opens a PR.
 
 ## Where it fits
 
