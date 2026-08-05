@@ -21,7 +21,7 @@ When editing this skill, verify that pressure scenarios exist to cover each sect
 - [x] Red flags — each test/coverage-related flag triggered by at least one scenario (including hollow coverage)
 - [x] Dead code detection — agent considers deletion, not just exclusion
 - [x] Multi-language repos — agent scans for ALL languages, sets up coverage per language
-- [x] Lint gate — discovery (AGENTS.md/CLAUDE.md → project config → CI → ask human before assuming "no lint")
+- [x] Lint gate — discovery (AGENTS.md → project config → CI → ask human before assuming "no lint")
 - [x] Lint gate — all-languages verification + zero-findings bar (parallels coverage's all-languages rule)
 - [x] Lint gate — "slow linters (jbinspect, full clang-tidy) — run anyway" discipline; "slow" not in escalation ladder
 - [x] Lint gate — pre-existing lint debt routed through escalation ladder + per-case suppression / documented exception

@@ -20,14 +20,7 @@ The skill layers on top of `test-driven-development` (write tests first) and `ve
 
 ## Install
 
-Copy `SKILL.md` to `~/.agents/skills/maintaining-full-coverage/` (or wherever your agent harness reads skills from):
-
-```bash
-mkdir -p ~/.agents/skills/maintaining-full-coverage
-cp SKILL.md ~/.agents/skills/maintaining-full-coverage/SKILL.md
-```
-
-The skill will be picked up automatically by any harness that scans that location (in Claude Code it appears in the `/skills` list) and trigger when completing work in projects that track coverage.
+Copy `SKILL.md` to `~/.agents/skills/maintaining-full-coverage/` (or wherever your agent harness reads skills from). Only the `SKILL.md` file is needed.
 
 ## Report file format
 
