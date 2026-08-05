@@ -1,6 +1,6 @@
 # smoke-test
 
-An agent skill that makes the agent run a smoke test after every change, before declaring work complete — so the user is never the first person to discover that a change doesn't work.
+A skill that makes the agent run a smoke test after every change, before declaring work complete — so the user is never the first person to discover that a change doesn't work.
 
 ## When it fires
 
