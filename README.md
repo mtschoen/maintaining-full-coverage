@@ -20,7 +20,7 @@ The skill layers on top of `test-driven-development` (write tests first) and `ve
 
 ## Install
 
-Copy `SKILL.md` to `~/.agents/skills/maintaining-full-coverage/` (or wherever your agent harness reads skills - e.g. `~/.claude/skills/` for Claude Code):
+Copy `SKILL.md` to `~/.agents/skills/maintaining-full-coverage/` (or wherever your agent harness reads skills from):
 
 ```bash
 mkdir -p ~/.agents/skills/maintaining-full-coverage
