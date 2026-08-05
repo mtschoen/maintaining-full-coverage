@@ -72,7 +72,7 @@ One gate, two kinds of checker - coverage tools and linters/analyzers - run at t
 BEFORE claiming completion:
 
 1. FIND the repo's coverage command AND its linters/analyzers. Check in order:
-   a. AGENTS.md or CLAUDE.md - documented coverage/lint commands
+   a. AGENTS.md - documented coverage/lint commands
    b. Scripts directory - run-coverage, coverage, lint, or test scripts
    c. Project config - pyproject.toml [tool.ruff]/[tool.mypy], package.json
       lint scripts, .clang-tidy, *.sln + .editorconfig (Roslyn),
@@ -85,7 +85,7 @@ BEFORE claiming completion:
       configured, ASK the human whether to add one - don't silently
       assume "this project doesn't lint."
 2. VERIFY the commands cover all production code IN EVERY LANGUAGE.
-   Do NOT trust AGENTS.md/CLAUDE.md or existing scripts blindly - they
+   Do NOT trust AGENTS.md or existing scripts blindly - they
    may be incomplete. Scan the repo for ALL production code; each
    language needs its own coverage tool AND its own linter.
    Example: C# managed code + a C++ native library needs BOTH
@@ -109,7 +109,7 @@ BEFORE claiming completion:
    is a REQUIRED artifact - current git hash, test count, coverage
    numbers, per-tool findings.
 7. APPLY the repository's policy for `TEST-REPORT.md`. Check explicit user
-   instructions for the current task, then AGENTS.md / CLAUDE.md, CI and
+   instructions for the current task, then AGENTS.md, CI and
    repository documentation. This skill neither requires nor forbids staging
    or committing the report.
 8. ONLY after the report is written and the repository policy is applied: done.
@@ -247,7 +247,7 @@ memory or notes system, if the environment has one - not the report.
 - **Git disposition follows repository policy.** This skill requires an up-to-date report but neither requires nor forbids tracking, staging, or committing it. Follow explicit user and repository instructions.
 - **Updated whenever tests or coverage change.** Not "later" - now, as part of the work.
 - **Git hash above coverage results.** It establishes what code the numbers describe.
-- **AGENTS.md (or CLAUDE.md) documents the coverage command** and references `TEST-REPORT.md`.
+- **AGENTS.md documents the coverage command** and references `TEST-REPORT.md`.
 - **With CI:** PRs that regress coverage are rejected unless an exemption grants a new baseline.
 - **Without CI:** The local report records the latest evidence for manual comparison.
 
