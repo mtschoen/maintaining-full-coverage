@@ -72,7 +72,7 @@ One gate, two kinds of checker - coverage tools and linters/analyzers - run at t
 BEFORE claiming completion:
 
 1. FIND the repo's coverage command AND its linters/analyzers. Check in order:
-   a. AGENTS.md or CLAUDE.md - documented coverage/lint commands
+   a. AGENTS.md - documented coverage/lint commands
    b. Scripts directory - run-coverage, coverage, lint, or test scripts
    c. Project config - pyproject.toml [tool.ruff]/[tool.mypy], package.json
       lint scripts, .clang-tidy, *.sln + .editorconfig (Roslyn),
@@ -85,7 +85,7 @@ BEFORE claiming completion:
       configured, ASK the human whether to add one - don't silently
       assume "this project doesn't lint."
 2. VERIFY the commands cover all production code IN EVERY LANGUAGE.
-   Do NOT trust AGENTS.md/CLAUDE.md or existing scripts blindly - they
+   Do NOT trust AGENTS.md or existing scripts blindly - they
    may be incomplete. Scan the repo for ALL production code; each
    language needs its own coverage tool AND its own linter.
    Example: C# managed code + a C++ native library needs BOTH
@@ -109,7 +109,7 @@ BEFORE claiming completion:
    is a REQUIRED artifact - current git hash, test count, coverage
    numbers, per-tool findings.
 7. APPLY the repository's policy for `TEST-REPORT.md`. Check explicit user
-   instructions for the current task, then AGENTS.md / CLAUDE.md, CI and
+   instructions for the current task, then AGENTS.md, CI and
    repository documentation. This skill neither requires nor forbids staging
    or committing the report.
 8. ONLY after the report is written and the repository policy is applied: done.
@@ -155,7 +155,7 @@ The `while (isActive)` form has a false branch the tool can't reach (cancellatio
 
 A warning you're tempted to silence often points at a real structural problem; restructuring to satisfy it can surface a genuine bug instead of hiding one. Never mass-suppress a category as "technically false positives" - demand a per-case justification for the rare real one.
 
-In git-wizard (C#), a JetBrains `AccessToDisposedClosure` inspection flagged 18 sites. Bulk suppression was tempting; the structural fix was better. On the dominant pattern, moving the `using` inside the lambda makes test lifetime explicit in code instead of asserted in a comment:
+In [git-wizard](https://github.com/mtschoen/git-wizard) (C#), a JetBrains `AccessToDisposedClosure` inspection flagged 18 sites. Bulk suppression was tempting; the structural fix was better. On the dominant pattern, moving the `using` inside the lambda makes test lifetime explicit in code instead of asserted in a comment:
 
 ```csharp
 // Before - analyzer flags the disposable captured by the lambda
@@ -221,6 +221,8 @@ The **Mode** line records which of the Three Modes governed this run, so a futur
 
 Beyond the minimum, projects add whatever is useful - per-suite breakdowns, branch coverage, UI audit stats, timing.
 
+The report records verification evidence ONLY - status, mode, counts, coverage, lint findings, exclusions. It is not a place for implementation narrative: no description of what was changed, no code snippets, no changelog-style prose. That belongs in the commit message and the PR body; the report is evidence a gate ran, not a description of the work that ran it.
+
 ### One snapshot, not a journal
 
 `TEST-REPORT.md` holds exactly one report: the latest. Overwrite the entire
@@ -245,7 +247,7 @@ memory or notes system, if the environment has one - not the report.
 - **Git disposition follows repository policy.** This skill requires an up-to-date report but neither requires nor forbids tracking, staging, or committing it. Follow explicit user and repository instructions.
 - **Updated whenever tests or coverage change.** Not "later" - now, as part of the work.
 - **Git hash above coverage results.** It establishes what code the numbers describe.
-- **AGENTS.md (or CLAUDE.md) documents the coverage command** and references `TEST-REPORT.md`.
+- **AGENTS.md documents the coverage command** and references `TEST-REPORT.md`.
 - **With CI:** PRs that regress coverage are rejected unless an exemption grants a new baseline.
 - **Without CI:** The local report records the latest evidence for manual comparison.
 
