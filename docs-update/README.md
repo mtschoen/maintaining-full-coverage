@@ -1,6 +1,6 @@
 # docs-update
 
-A Claude Code skill that checks whether a finished, verified change made any documentation lie - README, CLAUDE.md / AGENTS.md, other in-repo docs, inline doc comments - before the agent declares work done or opens a PR.
+An agent skill that checks whether a finished, verified change made any documentation lie - README, CLAUDE.md / AGENTS.md, other in-repo docs, inline doc comments - before the agent declares work done or opens a PR.
 
 ## Where it fits
 
