@@ -1,6 +1,6 @@
 # maintaining-full-coverage
 
-An agent skill that gates task completion on test coverage and lint cleanliness, with a report file for verification evidence.
+A skill that gates task completion on test coverage and lint cleanliness, with a report file for verification evidence.
 
 This skill is part of the completion suite: `maintaining-full-coverage`, `smoke-test`, `docs-update`, `escalate-over-shortcut`, and `wrap`. Suite skills install separately (each lives in its own repo) but are designed to be installed together, and they reference each other directly. Each works standalone; treat cross-references to missing suite members as optional.
 
