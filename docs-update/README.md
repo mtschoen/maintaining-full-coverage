@@ -44,7 +44,7 @@ python evals/run.py --evals evals/evals.json --skill-md SKILL.md --output-dir wo
 python evals/grade.py --responses-dir workspace/r1 --evals evals/evals.json --llm-judge
 ```
 
-First live comparison (2026-06-10, n=3): with_skill 12/12 vs baseline 4/12 (8 docs_stale); control 3/3 no_op in both configs. **Prompt design rule:** the agent prompt must not name the graded dimension - the wrapper used to end "summarize what you did and which docs (if any) you touched", which leaked "docs" to the baseline; it now ends "summarize the state of the work". Keep briefs and wrapper neutral so the harness measures the skill, not instruction-following.
+First live comparison (2026-06-10, n=3 runs per scenario): with_skill 12/12 vs baseline 4/12, where 12 is all 4 scenarios x 3 runs (the control scenario's runs count toward that denominator, they are not separate from it). Of baseline's 9 `update`-scenario runs, 8 came back docs_stale and 1 came back correct; the remaining 3 correct baseline runs are the control's 3/3 no_op, which with_skill also got right, restated here because it is the one bucket where both configs agree. **Prompt design rule:** the agent prompt must not name the graded dimension - the wrapper used to end "summarize what you did and which docs (if any) you touched", which leaked "docs" to the baseline; it now ends "summarize the state of the work". Keep briefs and wrapper neutral so the harness measures the skill, not instruction-following.
 
 ## Related skills
 
