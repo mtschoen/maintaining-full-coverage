@@ -68,7 +68,7 @@ When coverage is below 100% or a linter has findings:
 
 This skill was developed using the [TDD-for-skills](https://github.com/anthropics/superpowers) methodology: write pressure scenarios, observe baseline agent behavior without the skill, write the skill to fix the gaps, verify compliance.
 
-**10 pressure scenarios** covering:
+**Several pressure scenarios** (a sampling below - [AUDIT.md](AUDIT.md) has the full, current set):
 
 | Scenario | Tests |
 |----------|-------|
@@ -83,7 +83,7 @@ This skill was developed using the [TDD-for-skills](https://github.com/anthropic
 | Startup/Shutdown (daemon) | Mock init deps, trigger teardown explicitly |
 | Hollow Coverage (code review) | Tests that cover without testing behavior |
 
-**15/15 skill sections covered** by at least one scenario. See [AUDIT.md](AUDIT.md) for the full coverage matrix.
+**Every skill section is covered** by at least one scenario. See [AUDIT.md](AUDIT.md) for the full coverage matrix.
 
 All RED-GREEN comparisons are in `docs/evidence/`.
 
@@ -91,7 +91,7 @@ All RED-GREEN comparisons are in `docs/evidence/`.
 
 ```text
 SKILL.md                -- the skill (copy this to install)
-AUDIT.md                -- skill coverage audit (15/15 sections)
+AUDIT.md                -- skill coverage audit
 docs/evidence/          -- pressure scenarios, baseline and GREEN-phase results
 ```
 
