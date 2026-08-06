@@ -44,7 +44,7 @@ The 100%-coverage / 0-findings bar is the destination. Whether *this task* must 
 
 **When the mode is ambiguous, ask.** If the project is dirty and you can't tell whether the user wants gap-closing (mode 2) or best-effort-on-a-feature (mode 3), ask which - one short question. Don't silently default to the hardline (you'll block an unrelated task on inherited debt) and don't silently default to lax (you'll let a project that wanted cleanup stay dirty).
 
-The report file records which mode applied and the baseline it measured against, so the next session knows whether a number is a ceiling to hold or a floor to ratchet up from.
+The report file records which mode applied and the baseline it measured against (see the **Mode** row in Report File Convention).
 
 ## When to Use
 
@@ -181,21 +181,9 @@ Exclusion is correct for genuinely-untestable framework bindings - Android `Medi
 
 ## Report File Convention
 
-Every project maintains an up-to-date coverage report at the **repo root** named `TEST-REPORT.md`. If a project already has a report file under a different name, use that. Otherwise, create `TEST-REPORT.md`.
-
-### Creating or updating the report
-
-After running the gate, **you must** write or overwrite `TEST-REPORT.md` with the results. This is not optional - it is a required artifact of every run.
-
-1. Get the current git short hash: `git rev-parse --short HEAD`
-2. Get the total test count from the test runner output
-3. Get line/branch/method coverage from the coverage tool output
-4. Write `TEST-REPORT.md` at the repo root using the format below
-5. Follow the repository's explicit policy for whether the report is tracked, staged, or committed. If the repository is silent, do not invent a report-specific rule as part of this gate; handle it through the normal commit workflow.
+Every project maintains an up-to-date coverage report at the repo root, named `TEST-REPORT.md` by default. Writing it is a required artifact of every gate run (step 6 above), not an optional extra: take the current git short hash (`git rev-parse --short HEAD`), the test counts, and the coverage and lint numbers straight from the run you just did, and overwrite the file with the skeleton below. The rules it has to satisfy are the **Report file rules** at the end of this section.
 
 ### Minimal required format
-
-The report is committed markdown and gets read on the forge (gitea, GitHub) during review, so it must **render** there, not just look aligned in a terminal. Write it as real markdown: headers, tables, fenced commands, a blank line between every block. No box-drawing rules (`===`, `___`, U+2550), no em-dashes, no bare indented field lists - renderers collapse consecutive non-blank lines into one run-on paragraph and glue an underline rule to the title above it.
 
 Copy this skeleton, keeping every field:
 
@@ -250,21 +238,20 @@ The **Mode** row records which of the Three Modes governed this run, so a future
 
 Beyond the minimum, projects add whatever is useful - per-suite breakdowns, branch coverage, UI audit stats, timing.
 
-The report records verification evidence ONLY - status, mode, counts, coverage, lint findings, exclusions. It is not a place for implementation narrative: no description of what was changed, no code snippets, no changelog-style prose. That belongs in the commit message and the PR body; the report is evidence a gate ran, not a description of the work that ran it.
-
 ### One snapshot, not a journal
 
 `TEST-REPORT.md` holds exactly one report: the latest. Overwrite the entire
 file on every pass - never append a new section on top of the last one, and
 never leave a prior pass's write in place alongside the current one.
 
-Facts only: git ref, status and test counts (a pass/fail/skip breakdown
-when available), coverage numbers, one line per
-lint tool, and the exact commands run (the `## Commands` fence). No editorial narration - no mode
-description, no docs-drift audit, no smoke-test walkthrough, no "Concerns"
-section, no machine-workaround explanation. That evidence belongs in the PR
-body and the commit message, not a file a future session reads as current
-state.
+Facts only: status, mode, git ref, test counts (a pass/fail/skip breakdown
+when available), coverage numbers, exclusions, one line per lint tool, and the
+exact commands run (the `## Commands` fence). The report is evidence a gate
+ran, not a description of the work that ran it - no implementation narrative,
+no code snippets, no changelog-style prose, no mode description, no docs-drift
+audit, no smoke-test walkthrough, no "Concerns" section, no machine-workaround
+explanation. That belongs in the commit message and the PR body, not in a file
+a future session reads as current state.
 
 Machine-specific gotchas discovered while testing (a flaky path on one host,
 a workaround needed only on Windows) go to the agent's persistent
@@ -272,8 +259,8 @@ memory or notes system, if the environment has one - not the report.
 
 ### Report file rules
 
-- **Lives at repo root as `TEST-REPORT.md`** unless the project already has a report file elsewhere.
-- **Renders as markdown, not as terminal output.** Headers and tables, blank line between blocks, ASCII only, pipes escaped inside cells. Check it in a markdown preview before you call it written - if it renders as one run-on paragraph, it is not done.
+- **Lives at repo root as `TEST-REPORT.md`** unless the project already has a report file under a different name - if it does, use that one instead of creating a second.
+- **Renders as markdown, not as terminal output.** It is committed markdown read on the forge (gitea, GitHub) during review, so it must render there, not merely look aligned in a terminal: headers, tables, fenced commands, a blank line between every block, ASCII only, pipes escaped inside cells. No box-drawing rules (`===`, `___`, U+2550), no em-dashes, no bare indented field lists - renderers collapse consecutive non-blank lines into one run-on paragraph and glue an underline rule to the title above it. Check it in a markdown preview before you call it written; if it renders as one run-on paragraph, it is not done.
 - **Git disposition follows repository policy.** This skill requires an up-to-date report but neither requires nor forbids tracking, staging, or committing it. Follow explicit user and repository instructions.
 - **Updated whenever tests or coverage change.** Not "later" - now, as part of the work.
 - **Git hash above coverage results.** It establishes what code the numbers describe.
