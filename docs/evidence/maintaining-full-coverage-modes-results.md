@@ -1,4 +1,4 @@
-# maintaining-full-coverage — Three-Modes Softening Results
+# maintaining-full-coverage - Three-Modes Softening Results
 
 Tested: 2026-05-28
 Model: claude-sonnet-4-6
@@ -11,7 +11,7 @@ skill version, not no-skill.
 Round-3 Scenario 14 surfaced a hardline stance: the skill demanded a dirty
 project reach 100% / 0 findings (or a fully documented-exception baseline)
 before an *unrelated* feature could be declared done. That blocks ordinary
-feature work on inherited debt. The fix introduces three modes — **maintain**
+feature work on inherited debt. The fix introduces three modes - **maintain**
 (project already clean → hold the absolute bar), **close-the-gap** (reaching the
 bar IS the task → insist on 100%), and **best-effort** (dirty project, unrelated
 task → ratchet: cover what you touch, don't regress the baseline, surface the
@@ -20,7 +20,7 @@ debt). When the mode is ambiguous, ask.
 ## Scenario 14: Pre-existing eslint debt (now a best-effort case)
 
 **Old skill:** Hardline. "Either I clear the debt, or I document it explicitly
-with human buy-in — those are the only two paths to 'done.'" Refuses a PASS
+with human buy-in - those are the only two paths to 'done.'" Refuses a PASS
 while 1,244 inherited findings exist; routes all of them through the escalation
 ladder. The 30-line feature is blocked on repo-wide cleanup.
 
@@ -28,9 +28,9 @@ ladder. The 30-line feature is blocked on repo-wide cleanup.
 the count held at 1,244 (`+0`), writes `Mode: best-effort`, `Status: PASS`,
 `Lint: eslint 1244 findings (pre-existing baseline, +0 this change)`, surfaces
 the debt and suggests a cleanup task. Ships the feature without forcing repo
-cleanup — while refusing to add debt or falsify the report.
+cleanup - while refusing to add debt or falsify the report.
 
-**Verdict: SOFTENED correctly** — the headline change. Unrelated work is no
+**Verdict: SOFTENED correctly** - the headline change. Unrelated work is no
 longer hostage to inherited debt.
 
 ## Scenario 17: Best-effort on a dirty Python project (new)
@@ -44,22 +44,22 @@ expected." A 40-line endpoint drags in whole-repo cleanup.
 `Mode: best-effort` / `Status: PASS`, surfaces debt, offers a cleanup task.
 Explicitly refuses to fix the 1,244 / the 22% as a side effect ("scope creep").
 
-**Verdict: SOFTENED correctly** — clean separation of "my code" from "inherited
+**Verdict: SOFTENED correctly** - clean separation of "my code" from "inherited
 debt," with the ratchet (no regression, cover-what-you-touch) intact.
 
 ## Scenario 18: Ambiguous mode (new)
 
-**Old skill:** Impressively still asks a disambiguating question on its own — but
+**Old skill:** Impressively still asks a disambiguating question on its own - but
 frames both branches around the hardline bar ("I do not declare done at 82%
 overall and call it 'close enough'"), so even after asking it leans strict.
 
 **New skill:** "Step 0: Resolve the ambiguity before touching anything," citing
 the skill's explicit "when mode is ambiguous, ask" rule. Names mode 2 vs mode 3,
-asks one question, then applies the correct bar — best-effort holds the baseline
+asks one question, then applies the correct bar - best-effort holds the baseline
 and does not clear inherited debt; close-the-gap insists on 100%. Records the
 chosen mode in the report.
 
-**Verdict: IMPROVED** — both ask (good latent instinct); the skill adds the
+**Verdict: IMPROVED** - both ask (good latent instinct); the skill adds the
 principled framework and the right post-disambiguation bar.
 
 ## Net assessment
@@ -70,7 +70,7 @@ The softening lands exactly as intended and introduces no new failure mode:
 - **The ratchet still bites:** every new-skill run fixed its own findings,
   refused to let the count grow, and refused to write a false `0 findings` /
   `PASS`. Best-effort is a floor, not a free pass.
-- **Maintain / close-the-gap keep the strict bar** — the round-1/2 strict
+- **Maintain / close-the-gap keep the strict bar** - the round-1/2 strict
   scenarios (1–11) are unchanged maintain-mode cases and still hold.
 - **Ambiguity routes to a question**, not a silent default in either direction.
 

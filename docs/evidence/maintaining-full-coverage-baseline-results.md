@@ -1,4 +1,4 @@
-# maintaining-full-coverage — RED Phase Baseline Results
+# maintaining-full-coverage - RED Phase Baseline Results
 
 Tested: 2026-04-04
 Model: claude-sonnet-4-6 (no skill loaded)
@@ -9,10 +9,10 @@ Model: claude-sonnet-4-6 (no skill loaded)
 
 **Gaps identified:**
 
-- Jumped to `pragma: no cover` as option B — no "ask the human" step
+- Jumped to `pragma: no cover` as option B - no "ask the human" step
 - Did not consider the code might be unreachable/dead and should be deleted
 - No mention of the report file at all
-- No structured escalation — ad-hoc judgment
+- No structured escalation - ad-hoc judgment
 
 ## Scenario 2: "Platform Code" (Linux block on Windows)
 
@@ -30,8 +30,8 @@ Model: claude-sonnet-4-6 (no skill loaded)
 
 **Gaps identified:**
 
-- Explicitly said would NOT ask the human first — "takes less time than composing a question"
-- Pragma with TODO mentioned as fallback — no structured escalation
+- Explicitly said would NOT ask the human first - "takes less time than composing a question"
+- Pragma with TODO mentioned as fallback - no structured escalation
 - No mention of report file
 - No consideration of whether the error handler is even correct/reachable
 
@@ -41,20 +41,20 @@ Model: claude-sonnet-4-6 (no skill loaded)
 
 **Gaps identified:**
 
-- Report file mentioned but only as "pending regeneration" — not a first-class step
+- Report file mentioned but only as "pending regeneration" - not a first-class step
 - No mention of branch coverage specifically
-- No structured process — just "override the inclination deliberately"
+- No structured process - just "override the inclination deliberately"
 
 ## Cross-Scenario Patterns
 
 ### The skill must fix these (consistent failures)
 
-1. **Report file is an afterthought** — no agent treated it as a mandatory, first-class artifact
-2. **No escalation to human** — agents prefer autonomy over asking; "ask the human" never appeared as an explicit step
-3. **Pragma before asking** — pragma is reached for before human escalation
-4. **No escalation ladder** — agents use ad-hoc judgment, not a structured sequence
-5. **Dead code not considered** — uncovered code assumed to be live; nobody asked "should this be deleted?"
-6. **Branch coverage not mentioned** — no general awareness of covering both sides of conditionals
+1. **Report file is an afterthought** - no agent treated it as a mandatory, first-class artifact
+2. **No escalation to human** - agents prefer autonomy over asking; "ask the human" never appeared as an explicit step
+3. **Pragma before asking** - pragma is reached for before human escalation
+4. **No escalation ladder** - agents use ad-hoc judgment, not a structured sequence
+5. **Dead code not considered** - uncovered code assumed to be live; nobody asked "should this be deleted?"
+6. **Branch coverage not mentioned** - no general awareness of covering both sides of conditionals
 
 ### Surprisingly good baseline (skill can build on these)
 
