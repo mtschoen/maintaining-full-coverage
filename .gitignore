@@ -1,5 +1,14 @@
 .claude/
 
+# Local eval workspaces: iteration outputs, grading logs, pilots.
+# Regenerated per machine, never versioned.
+workspace/
+
+# Python bytecode left behind by the skills' eval harnesses.
+__pycache__/
+*.pyc
+*.pyo
+
 # OS
 .DS_Store
 Thumbs.db

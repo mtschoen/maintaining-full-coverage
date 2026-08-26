@@ -1,18 +1,21 @@
 # Completion discipline
 
-Five skills that decide when an agent is allowed to say "done".
+Seven skills that decide what an agent owes the work at the point it stops.
 
-Coding agents are systematically overconfident about completion. They report
-success from the absence of an error rather than the presence of evidence, they
-declare a feature finished without running it, and they quietly lower a bar
-rather than clear it. None of that is a knowledge gap: the agent usually knows
-what it should have checked. It just stopped one step early, because stopping
-felt like finishing.
+Coding agents are systematically overconfident about being finished. They
+report success from the absence of an error rather than the presence of
+evidence, they declare a feature finished without running it, and they quietly
+lower a bar rather than clear it. None of that is a knowledge gap: the agent
+usually knows what it should have checked. It just stopped one step early,
+because stopping felt like finishing.
 
-These skills are the gates that make it stop later. Each one fires at the same
-moment - the point where the agent is about to claim work is complete - and
-each asks a different question that has to be answered before the claim is
-allowed.
+Stopping is not a single moment. An agent stops when it claims a change is
+done, and it stops again when the session ends and the change is left sitting
+in a repo alongside everything else the work disturbed: an unpushed branch, a
+plan that no longer matches what shipped, scratch directories that outlived
+their purpose. Both are handovers, and the last step goes unpaid at either one.
+These skills are the gates that make the agent pay it. Each fires at a handover
+and asks a question that has to be answered before the work can be handed over.
 
 | Skill | The question it forces |
 | --- | --- |
@@ -20,14 +23,19 @@ allowed.
 | [`maintaining-full-coverage`](maintaining-full-coverage/) | Did the coverage and lint bars hold, or did you move them? |
 | [`docs-update`](docs-update/) | Did this change make any documentation lie? |
 | [`escalate-over-shortcut`](escalate-over-shortcut/) | Is this a solution, or a suppression of the problem? |
+| [`reconcile-tasks`](reconcile-tasks/) | Does the plan still describe what actually shipped? |
 | [`wrap`](wrap/) | Is the session actually closed out, or just abandoned? |
+| [`project-maintenance`](project-maintenance/) | What did the work leave behind in the repo? |
 
-They compose deliberately. `smoke-test` proves the change runs,
-`maintaining-full-coverage` proves it did not cost quality elsewhere,
-`docs-update` catches the prose the change invalidated,
+They compose deliberately, and in that order. The first four settle the change
+itself: `smoke-test` proves it runs, `maintaining-full-coverage` proves it did
+not cost quality elsewhere, `docs-update` catches the prose it invalidated, and
 `escalate-over-shortcut` catches the case where the agent's own draft is a
-dressed-up workaround, and `wrap` closes the session so nothing is left
-stranded on an unpushed branch.
+dressed-up workaround. The last three settle everything around it:
+`reconcile-tasks` makes the project's written record agree with its commit
+history, `wrap` closes the session so nothing is left stranded on an unpushed
+branch, and `project-maintenance` sweeps what accumulated in the repo across
+however many sessions the work took.
 
 Most invocations end with nothing to report. That is the healthy case. The
 value is the check, not the finding.
@@ -43,8 +51,10 @@ mode rather than the remedy. A red result is a worklist, not a verdict on
 whether the bar was right.
 
 **Portable.** These name actions, not tools. Where a specific tool would make a
-step easier the agent will find it at runtime; the written instruction stays
-tool-agnostic so the skill works on a machine that has none of it.
+step easier it is a soft dependency with a written fallback: `project-tracker`
+hands `reconcile-tasks` and `project-maintenance` their data, and without it
+both read `PLAN.md`, `TODO.md`, and `git log` themselves. Every skill here
+works on a machine that has none of it.
 
 ## Installing
 
