@@ -1,0 +1,76 @@
+# SessionEnd Reminder Hook
+
+A decoupled nudge mechanism, separate from the wrap skill itself. Registered as a `SessionEnd` hook (see "Registering the hook" below for the manual-install vs. plugin-install shapes). Runs at session exit, prints at most one line, exits 0.
+
+## What it does
+
+Checks the session's final `cwd` for wrap-worthy signals:
+
+1. Working tree dirty? (`git status --porcelain` non-empty)
+2. Unpushed commits? (`git log @{u}..HEAD` non-empty, if upstream exists)
+3. Any files present in ignored folders like `.claude/scripts/`?
+
+If any fire, prints a single-line reminder. Otherwise prints nothing.
+
+## Rate limiter
+
+A marker file at `~/.agents/wrap/nudge-last-fired`. If the hook fired within the last 5 minutes, the hook skips entirely (prevents noise during quick-exit-restart cycles). On each non-skipped run, the hook touches the marker.
+
+**Wrap itself does not read or write this file.** Full decoupling - the skill and the hook know nothing about each other.
+
+## Output format
+
+Example:
+
+```text
+⚠ wrap-worthy state: 3 dirty files, 2 unpushed commits in ~/myrepo. Consider /wrap next session.
+```
+
+If no signals fire, the hook prints nothing. Silent is valid.
+
+## Scope caveat
+
+The hook sees only the session's final `cwd`. If the session touched multiple repos but exited from a third, the hook only reports that third. This is acceptable because the hook is a nudge, not a checklist - the user knows what they touched.
+
+## Registering the hook
+
+Register via a `SessionEnd` entry in `~/.claude/settings.json`, with a literal path to the hook script:
+
+```json
+{
+  "hooks": {
+    "SessionEnd": [
+      {
+        "command": "~/.claude/skills/wrap/hooks/session-end-reminder.sh"
+      }
+    ]
+  }
+}
+```
+
+On Windows, substitute `session-end-reminder.ps1`:
+
+```json
+{
+  "hooks": {
+    "SessionEnd": [
+      {
+        "command": "pwsh -NoProfile -File C:/Users/<you>/.claude/skills/wrap/hooks/session-end-reminder.ps1"
+      }
+    ]
+  }
+}
+```
+
+Use the `update-config` skill to perform the registration rather than hand-editing `settings.json`.
+
+If this skill arrived as part of a skill pack, check whether the pack's installer provides a hook offer flow - a command that checks registration state and records the user's yes / no / later decision - and route the suggestion through it instead of proposing manual registration, so the user is asked at most once.
+
+If some future packaging lands the skill at a path that moves between versions, a literal path like the one above goes stale on every bump; that packaging is responsible for registering the hook itself, and this file's snippet no longer applies.
+
+## What the hook must NOT do
+
+- Invoke wrap. It is a nudge, not a trigger.
+- Block or delay exit. Must return within milliseconds and exit 0 always.
+- Read wrap's internal state. Wrap is stateless; the hook is rate-limited independently.
+- Check multiple repos. Single-repo (final `cwd`) is the intentional scope.
