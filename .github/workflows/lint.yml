@@ -16,3 +16,54 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v23
         with:
           globs: '**/*.md'
+
+  python:
+    # Each skill below owns its own ruff+pytest gate, run from its own
+    # directory. evals/scenarios seed trees carry their own tests/ packages
+    # (several share the module name `tests`), so pytest collection ignores
+    # evals/scenarios while ruff still lints it - the harness itself has no
+    # unit tests yet, hence tolerating pytest's exit 5 (no tests collected).
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install ruff==0.15.15 pytest
+      - name: docs-update
+        working-directory: docs-update
+        run: |
+          ruff check evals/
+          ruff format --check evals/
+      - name: docs-update pytest (allow exit 5 = no tests yet)
+        working-directory: docs-update
+        run: |
+          set +e
+          pytest evals/ --ignore=evals/scenarios
+          rc=$?
+          if [ $rc -eq 0 ] || [ $rc -eq 5 ]; then exit 0; fi
+          exit $rc
+      - name: escalate-over-shortcut
+        working-directory: escalate-over-shortcut
+        run: |
+          ruff check evals/
+          ruff format --check evals/
+      - name: escalate-over-shortcut pytest (allow exit 5 = no tests yet)
+        working-directory: escalate-over-shortcut
+        run: |
+          set +e
+          pytest evals/ --ignore=evals/scenarios
+          rc=$?
+          if [ $rc -eq 0 ] || [ $rc -eq 5 ]; then exit 0; fi
+          exit $rc
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          severity: error
+          scandir: '.'
