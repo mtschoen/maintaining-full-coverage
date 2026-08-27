@@ -57,6 +57,14 @@ jobs:
           rc=$?
           if [ $rc -eq 0 ] || [ $rc -eq 5 ]; then exit 0; fi
           exit $rc
+      - name: project-maintenance
+        working-directory: project-maintenance
+        run: |
+          ruff check evals/ tests/
+          ruff format --check evals/ tests/
+      - name: project-maintenance pytest
+        working-directory: project-maintenance
+        run: pytest tests/
 
   shellcheck:
     runs-on: ubuntu-latest
